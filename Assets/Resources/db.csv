@@ -1,6 +1,6 @@
 id,name,price,bought,pretty_name
 1,bird0,0,1,Blue Bird
-2,bird1,50,1,Red Bird
-3,bird2,100,1,Golden Bird
+2,bird1,50,0,Red Bird
+3,bird2,100,0,Golden Bird
 4,pipe-green,0,1,Green Pipes
-5,pipe-red,100,1,Red Pipes
+5,pipe-red,100,0,Red Pipes

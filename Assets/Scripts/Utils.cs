@@ -96,12 +96,12 @@ public struct Item
 }
 public class DataBase
 {
-    private const string PATH = "Assets/Resources/db.csv";
+    private const string PATH = "db";
 
     public static Dictionary<string, Item> getData()
     {
         Dictionary<string, Item> dict = new();
-        string[] lines = File.ReadAllText(PATH).Split("\n");
+        string[] lines = Resources.Load<TextAsset>(PATH).text.Split("\n");
         for (int i = 1; i < lines.Length; i++)
         {
             string[] arr = lines[i].Split(',');
