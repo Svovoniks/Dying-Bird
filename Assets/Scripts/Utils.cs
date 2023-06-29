@@ -96,12 +96,22 @@ public struct Item
 }
 public class DataBase
 {
-    private const string PATH = "db";
+    private const string ASSESTS_PATH = "db";
+    private const string DATABASE_PATH = "flappy bird_data/Resources/Database.db";
 
+    private static void initiateData() 
+    {
+        File.WriteAllText(DATABASE_PATH, Resources.Load<TextAsset>(ASSESTS_PATH).text);
+    }
     public static Dictionary<string, Item> getData()
     {
         Dictionary<string, Item> dict = new();
-        string[] lines = Resources.Load<TextAsset>(PATH).text.Split("\n");
+        if (!File.Exists(DATABASE_PATH))
+        {
+            initiateData();
+        }
+        string[] lines = File.ReadAllLines(DATABASE_PATH);
+
         for (int i = 1; i < lines.Length; i++)
         {
             string[] arr = lines[i].Split(',');
@@ -130,6 +140,6 @@ public class DataBase
             lines += item.ToString();
         }
 
-        File.WriteAllText(PATH, lines);
+        File.WriteAllText(DATABASE_PATH, lines);
     }
 }
