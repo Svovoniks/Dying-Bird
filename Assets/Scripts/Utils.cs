@@ -99,12 +99,17 @@ public class DataBase
     private const string ASSESTS_PATH = "db";
     private const string DATABASE_PATH = "flappy bird_data/Resources/Database.db";
 
-    private static void initiateData() 
+    //private const string DATABASE_PATH = "db"; For Unity Editor
+    private static void initiateData()
     {
         File.WriteAllText(DATABASE_PATH, Resources.Load<TextAsset>(ASSESTS_PATH).text);
     }
     public static Dictionary<string, Item> getData()
     {
+        if (Application.isPlaying)
+        {
+            Debug.Log("playing");
+        }
         Dictionary<string, Item> dict = new();
         if (!File.Exists(DATABASE_PATH))
         {
@@ -122,20 +127,20 @@ public class DataBase
             dict.Add(arr[1], new Item
                 (
                 int.Parse(arr[0]),
-                arr[1], 
-                int.Parse(arr[2]), 
-                int.Parse(arr[3]), 
+                arr[1],
+                int.Parse(arr[2]),
+                int.Parse(arr[3]),
                 arr[4]
                 ));
         }
-        
+
         return dict;
     }
 
-    public static void storeData(Dictionary<string, Item> dict) 
+    public static void storeData(Dictionary<string, Item> dict)
     {
         string lines = "id,name,price,bought,pretty_name\n";
-        foreach (Item item in dict.Values) 
+        foreach (Item item in dict.Values)
         {
             lines += item.ToString();
         }

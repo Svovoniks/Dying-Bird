@@ -8,26 +8,26 @@ using UnityEngine.UI;
 
 public class LogicMainScript : MonoBehaviour
 {
-    public AudioClip mainAudio;
-    public AudioSource audioSource;
-    public Toggle soundToggle;
-    public Toggle deathToggle;
-    public GameObject mainScreen;
-    public GameObject shopSelectorScreen;
-    public GameObject itemSelectorScreen;
-    public GameObject settingsScreen;
-    public Image birdImage;
-    public Image pipeImage;
-    public Text itemName;
-    public GameObject playersMoney;
-    public Text priceTag;
-    public Image checkmark;
-    public Button selectButton;
-    public Text selectButtonText;
-    public Text bestScoreText;
+    [SerializeField] private AudioClip mainAudio;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private Toggle soundToggle;
+    [SerializeField] private Toggle deathToggle;
+    [SerializeField] private GameObject mainScreen;
+    [SerializeField] private GameObject shopSelectorScreen;
+    [SerializeField] private GameObject itemSelectorScreen;
+    [SerializeField] private GameObject settingsScreen;
+    [SerializeField] private Image birdImage;
+    [SerializeField] private Image pipeImage;
+    [SerializeField] private Text itemName;
+    [SerializeField] private GameObject playersMoney;
+    [SerializeField] private Text priceTag;
+    [SerializeField] private Image checkmark;
+    [SerializeField] private Button selectButton;
+    [SerializeField] private Text selectButtonText;
+    [SerializeField] private Text bestScoreText;
 
     [Range(0f, 1f)]
-    public float mainAudioVolume;
+    [SerializeField] private float mainAudioVolume;
 
     private GameObject[] screenArray;
     private Sprite[] itemImageArray;

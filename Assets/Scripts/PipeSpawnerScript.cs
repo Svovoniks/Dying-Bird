@@ -7,12 +7,12 @@ using UnityEngine;
 public class PipeSpawnerScript : MonoBehaviour
 {
 
-    public GameObject pipe;
-    public float interval = 1;
-    public float pipeOffset = 1;
-    public float speed = 1;
+    [SerializeField] private GameObject pipe;
+    [SerializeField] private float interval = 1;
+    [SerializeField] private float pipeOffset = 1;
+    [SerializeField] private float speed = 1;
 
-    public static float currentSpeed;
+    public float currentSpeed { get; private set; }
 
     private float timer = 0;
     // Start is called before the first frame update

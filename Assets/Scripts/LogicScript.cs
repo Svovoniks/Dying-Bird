@@ -8,13 +8,13 @@ using UnityEngine.UI;
 public class LogicScript : MonoBehaviour
 {
     
-    public GameObject scoreWindow;
-    public GameObject moneyWindow;
-    public GameObject gameOverScreen;
-    public GameObject gamePausedScreen;
-    public GameObject pauseButton;
-    public GameObject startMessage;
-    public GameObject BestScoreNotifier;
+    [SerializeField] private GameObject scoreWindow;
+    [SerializeField] private GameObject moneyWindow;
+    [SerializeField] private GameObject gameOverScreen;
+    [SerializeField] private GameObject gamePausedScreen;
+    [SerializeField] private GameObject pauseButton;
+    [SerializeField] private GameObject startMessage;
+    [SerializeField] private GameObject BestScoreNotifier;
     
     private int score;
     private int money;

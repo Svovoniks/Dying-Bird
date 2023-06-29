@@ -6,8 +6,9 @@ using UnityEngine;
 
 public class PipeScript : MonoBehaviour
 {
-    public float destroyAfter = 1;
+    [SerializeField] private float destroyAfter = 1;
 
+    private PipeSpawnerScript pipeSpawnerScript;
     private string spritePath;
     // Start is called before the first frame update
     void Start()
@@ -20,6 +21,10 @@ public class PipeScript : MonoBehaviour
         {
             spritePath = Utils.PIPES_PATH + Utils.DEFAULT_PIPE;
         }
+
+        pipeSpawnerScript = GameObject.FindFirstObjectByType<PipeSpawnerScript>();
+        Debug.Log("df");
+
         transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(spritePath);
         transform.GetChild(2).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(spritePath);
     }
@@ -28,7 +33,7 @@ public class PipeScript : MonoBehaviour
     void Update()
     {
 
-        transform.position += Vector3.left * PipeSpawnerScript.currentSpeed * Time.deltaTime;
+        transform.position += Vector3.left * pipeSpawnerScript.currentSpeed * Time.deltaTime;
         
         if (transform.position.x < destroyAfter) 
         {

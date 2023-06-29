@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MiddlePipeScript : MonoBehaviour
 {
-    public LogicScript logicScript;
+    [SerializeField] private LogicScript logicScript;
     // Start is called before the first frame update
     void Start()
     {

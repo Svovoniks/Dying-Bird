@@ -5,21 +5,20 @@ using UnityEngine;
 
 public class BirdScript : MonoBehaviour
 {
-
-    public Rigidbody2D body;
-    public float jump = 1;
-    public LogicScript logicScript;
     public static bool isAlive;
-    public float frameRate = 12f;
-    public AudioSource flapSource;
-    public AudioSource deathSource;
-    public AudioSource hitSource;
-    public AudioSource lostSource;
-    public AudioClip flapClip;
-    public AudioClip deathClip;
-    public AudioClip hitClip;
-    public AudioClip lostClip;
 
+    [SerializeField] private Rigidbody2D body;
+    [SerializeField] private float jump = 1;
+    [SerializeField] private LogicScript logicScript;
+    [SerializeField] private float frameRate = 12f;
+    [SerializeField] private AudioSource flapSource;
+    [SerializeField] private AudioSource deathSource;
+    [SerializeField] private AudioSource hitSource;
+    [SerializeField] private AudioSource lostSource;
+    [SerializeField] private AudioClip flapClip;
+    [SerializeField] private AudioClip deathClip;
+    [SerializeField] private AudioClip hitClip;
+    [SerializeField] private AudioClip lostClip;
 
     private SpriteRenderer birdRenderer;
     private string spriteName;

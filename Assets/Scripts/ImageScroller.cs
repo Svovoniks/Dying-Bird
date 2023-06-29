@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class ImageScroller : MonoBehaviour
 {
-    public RawImage image;
-    public float x;
+    [SerializeField] private RawImage image;
+    [SerializeField] private float x;
 
     // Update is called once per frame
     void Update()

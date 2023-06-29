@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class coinScript : MonoBehaviour
 {
-    public int probability = 20;
+    [SerializeField] private int probability = 20;
 
     private LogicScript logicScript;
     private AudioSource coinSource;
