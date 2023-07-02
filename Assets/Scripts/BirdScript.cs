@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.IO.LowLevel.Unsafe;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BirdScript : MonoBehaviour
@@ -9,7 +11,6 @@ public class BirdScript : MonoBehaviour
 
     [SerializeField] private Rigidbody2D body;
     [SerializeField] private float jump = 1;
-    [SerializeField] private LogicScript logicScript;
     [SerializeField] private float frameRate = 12f;
     [SerializeField] private AudioSource flapSource;
     [SerializeField] private AudioSource deathSource;
@@ -19,24 +20,18 @@ public class BirdScript : MonoBehaviour
     [SerializeField] private AudioClip deathClip;
     [SerializeField] private AudioClip hitClip;
     [SerializeField] private AudioClip lostClip;
+    [SerializeField] private GameObject missile;
 
     private SpriteRenderer birdRenderer;
     private string spriteName;
     private Sprite[] frames = new Sprite[3];
     private float timer = 0f;
     private int currentFrameIndex = 0;
-
+    private LogicScript logicScript;
     // Start is called before the first frame update
     void Start()
     {
-        if (PlayerPrefs.HasKey(Utils.BIRD_KEY))
-        {
-            spriteName = PlayerPrefs.GetString(Utils.BIRD_KEY);
-        }
-        else
-        {
-            spriteName = Utils.DEFAULT_BIRD;
-        }
+        spriteName = Utils.getSpriteName(Utils.BIRD_KEY, Utils.DEFAULT_BIRD);
 
         frames[0] = Resources.Load<Sprite>(Utils.DOWN_PATH + spriteName);
         frames[1] = Resources.Load<Sprite>(Utils.MIDDLE_PATH + spriteName);
@@ -58,6 +53,10 @@ public class BirdScript : MonoBehaviour
             {
                 flapSource.Play();
             }
+        }
+        if (Input.GetKeyDown(KeyCode.Mouse0)) 
+        {
+            fire();
         }
 
         if ((math.abs(transform.position.y) > 1.5 || math.abs(transform.position.x) > 2.6) && isAlive) 
@@ -102,5 +101,14 @@ public class BirdScript : MonoBehaviour
         }
         isAlive = false;
         logicScript.gameOver();
+    }
+
+    private void fire() 
+    {
+        if (isAlive && Time.timeScale == 1 && logicScript.canFire) 
+        {
+            logicScript.resetMissile();
+            Instantiate(missile, transform.position, new Quaternion());
+        }
     }
 }

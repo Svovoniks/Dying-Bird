@@ -16,8 +16,7 @@ public class LogicMainScript : MonoBehaviour
     [SerializeField] private GameObject shopSelectorScreen;
     [SerializeField] private GameObject itemSelectorScreen;
     [SerializeField] private GameObject settingsScreen;
-    [SerializeField] private Image birdImage;
-    [SerializeField] private Image pipeImage;
+    [SerializeField] private Image itemImage;
     [SerializeField] private Text itemName;
     [SerializeField] private GameObject playersMoney;
     [SerializeField] private Text priceTag;
@@ -25,6 +24,10 @@ public class LogicMainScript : MonoBehaviour
     [SerializeField] private Button selectButton;
     [SerializeField] private Text selectButtonText;
     [SerializeField] private Text bestScoreText;
+    [SerializeField] private float pipesScale;
+    [SerializeField] private float missilesScale;
+    [SerializeField] private float birdScale;
+
 
     [Range(0f, 1f)]
     [SerializeField] private float mainAudioVolume;
@@ -33,21 +36,21 @@ public class LogicMainScript : MonoBehaviour
     private Sprite[] itemImageArray;
     private string itemsPath;
     private int currentIdx;
-    private Image itemImage;
     private string select_key;
     private Dictionary<string, Item> storeItems;
+    private string defaultName;
 
     private const int MAIN_SCREEN_IDX = 0;
     private const int SHOP_SELECTOR_SCREEN_IDX = 1;
     private const int ITEM_SELECTOR_SCREEN_IDX = 2;
     private const int SETTINGS_SCREEN_IDX = 3;
-    
+
     // Start is called before the first frame update
     void Start()
     {
         screenArray = new GameObject[]
         {
-            mainScreen, 
+            mainScreen,
             shopSelectorScreen,
             itemSelectorScreen,
             settingsScreen
@@ -58,7 +61,7 @@ public class LogicMainScript : MonoBehaviour
         audioSource.clip = mainAudio;
         audioSource.loop = true;
         audioSource.volume = mainAudioVolume;
-        if (Utils.getBool(Utils.SOUND_KEY)) 
+        if (Utils.getBool(Utils.SOUND_KEY))
         {
             audioSource.Play();
         }
@@ -69,7 +72,7 @@ public class LogicMainScript : MonoBehaviour
         {
             Utils.setNumber(PlayerPrefs.GetInt(Utils.MONEY_KEY), playersMoney, false);
         }
-        else 
+        else
         {
             Utils.setNumber(0, playersMoney, false);
         }
@@ -79,7 +82,7 @@ public class LogicMainScript : MonoBehaviour
             bestScoreText.gameObject.SetActive(true);
             bestScoreText.text = "Best Score: " + PlayerPrefs.GetInt(Utils.BEST_SCORE_KEY);
         }
-        else 
+        else
         {
             bestScoreText.gameObject.SetActive(false);
         }
@@ -87,7 +90,7 @@ public class LogicMainScript : MonoBehaviour
 
     private void openScreen(int num)
     {
-        for (int i = 0; i < screenArray.Length; i++) 
+        for (int i = 0; i < screenArray.Length; i++)
         {
             if (i == num)
             {
@@ -95,15 +98,15 @@ public class LogicMainScript : MonoBehaviour
             }
             screenArray[i].SetActive(false);
         }
-        screenArray[num] .SetActive(true);
+        screenArray[num].SetActive(true);
     }
 
-    public void openMain() 
+    public void openMain()
     {
         openScreen(MAIN_SCREEN_IDX);
     }
 
-    public void openShopSelector() 
+    public void openShopSelector()
     {
         openScreen(SHOP_SELECTOR_SCREEN_IDX);
     }
@@ -117,30 +120,45 @@ public class LogicMainScript : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    public void openBirdShop() 
+    public void openBirdShop()
     {
-        itemImageArray = Resources.LoadAll<Sprite>(Utils.DOWN_PATH);
-        currentIdx = 0;
-        itemImage = birdImage;
-        select_key = Utils.BIRD_KEY;
-
-        birdImage.gameObject.SetActive(true);
-        pipeImage.gameObject.SetActive(false);
-
-        openScreen(ITEM_SELECTOR_SCREEN_IDX);
-        setItem(currentIdx);
+        openShop(Utils.DOWN_PATH, Utils.BIRD_KEY, Utils.DEFAULT_BIRD, true, 0, birdScale);
     }
 
     public void openPipeShop()
     {
-        itemImageArray = Resources.LoadAll<Sprite>(Utils.PIPES_PATH);
+        openShop(Utils.PIPES_PATH, Utils.PIPE_KEY,Utils.DEFAULT_PIPE, true, 0, pipesScale);
+    }
+    public void openMissileShop()
+    {
+        openShop(Utils.MISSILE_PATH, Utils.MISSILE_KEY, Utils.DEFAULT_MISSILE, true, 90f, missilesScale);
+    }
+    public void openShop(string path, string key, string dName, bool switchHAndW, float angle, float scale)
+    {
+        defaultName = dName;
+        itemImageArray = Resources.LoadAll<Sprite>(path);
+        Array.Sort(itemImageArray, 
+            (x, y) => storeItems[x.name].price.CompareTo(storeItems[y.name].price));
+
         currentIdx = 0;
-        itemImage = pipeImage;
-        select_key = Utils.PIPE_KEY;
-        
-        birdImage.gameObject.SetActive(false);
-        pipeImage.gameObject.SetActive(true);
-        
+        select_key = key;
+
+        float height = itemImageArray[0].rect.height;
+        float width = itemImageArray[0].rect.width;
+
+
+        if (switchHAndW)
+        {
+            itemImage.rectTransform.sizeDelta = new Vector2(width, height);
+        }
+        else 
+        {
+            itemImage.rectTransform.sizeDelta = new Vector2(height, width);
+        }
+
+        itemImage.rectTransform.rotation = Quaternion.Euler(0, 0, angle);
+        itemImage.rectTransform.localScale = new Vector3(scale, scale);
+
         openScreen(ITEM_SELECTOR_SCREEN_IDX);
         setItem(currentIdx);
     }
@@ -188,11 +206,7 @@ public class LogicMainScript : MonoBehaviour
             else 
             {
                 checkmark.gameObject.SetActive(
-                    (item.name == Utils.DEFAULT_BIRD &&
-                    select_key == Utils.BIRD_KEY) 
-                    ||
-                    (item.name == Utils.DEFAULT_PIPE && 
-                    select_key == Utils.PIPE_KEY));
+                    item.name == defaultName);
             }
             priceTag.gameObject.SetActive(false);
         }

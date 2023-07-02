@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Xml.Serialization;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
@@ -14,17 +17,34 @@ public class LogicScript : MonoBehaviour
     [SerializeField] private GameObject gamePausedScreen;
     [SerializeField] private GameObject pauseButton;
     [SerializeField] private GameObject startMessage;
-    [SerializeField] private GameObject BestScoreNotifier;
-    
+    [SerializeField] private GameObject bestScoreNotifier;
+    [SerializeField] private GameObject missileCountdowm;
+    [SerializeField] private Image missileCheckmark;
+    [SerializeField] private Image missileImage;
+    [SerializeField] private float missileTimeout;
+
+
     private int score;
     private int money;
     private bool initialWait;
+    private float missileClock;
+
+    public bool canFire { get; private set; }
     
     private void Start()
     {
+        initialPause();
         money = PlayerPrefs.GetInt(Utils.MONEY_KEY);
         Utils.setNumber(money, moneyWindow, false);
-        initialPause();
+        
+        missileImage.sprite = 
+            Resources.Load<Sprite>(Utils.MISSILE_PATH +
+            Utils.getSpriteName(Utils.MISSILE_KEY, Utils.DEFAULT_MISSILE));
+
+        missileClock = 0;
+        Utils.setNumber(0, missileCountdowm, true);
+        missileCheckmark.gameObject.SetActive(false);
+        canFire = true;
     }
 
     private void Update()
@@ -33,6 +53,31 @@ public class LogicScript : MonoBehaviour
         {
            realStart();
         }
+
+        if (!missileCheckmark.IsActive() && !initialWait) 
+        {
+            updateMissile();
+        }
+    }
+
+    private void updateMissile()
+    {
+        missileClock -= Time.deltaTime;
+        if (missileClock <= 0) 
+        {
+            missileClock = 0;
+            missileCheckmark.gameObject.SetActive(true);
+            canFire = true;
+        }
+
+        Utils.setNumber((int) missileClock, missileCountdowm, true);    
+    }
+
+    public void resetMissile() 
+    {
+        missileClock = missileTimeout;
+        canFire = false;
+        missileCheckmark.gameObject.SetActive(false);
     }
 
     private void initialPause() 
@@ -65,7 +110,7 @@ public class LogicScript : MonoBehaviour
         if (bestScore < score)
         {
             PlayerPrefs.SetInt(Utils.BEST_SCORE_KEY, score);
-            BestScoreNotifier.gameObject.SetActive(true);
+            bestScoreNotifier.gameObject.SetActive(true);
         }
 
         pauseButton.SetActive(false);

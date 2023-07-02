@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Logic
   - CoinSource
+  - pipeImage
   layers:
   - Default
   - TransparentFX
@@ -13,8 +14,8 @@ TagManager:
   - Bird
   - Water
   - UI
-  - 
-  - 
+  - Missile
+  - Pipe
   - 
   - 
   - 

@@ -13,17 +13,9 @@ public class PipeScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (PlayerPrefs.HasKey(Utils.PIPE_KEY))
-        {
-            spritePath = Utils.PIPES_PATH + PlayerPrefs.GetString(Utils.PIPE_KEY);
-        }
-        else
-        {
-            spritePath = Utils.PIPES_PATH + Utils.DEFAULT_PIPE;
-        }
+        spritePath = Utils.PIPES_PATH + Utils.getSpriteName(Utils.PIPE_KEY, Utils.DEFAULT_PIPE);
 
         pipeSpawnerScript = GameObject.FindFirstObjectByType<PipeSpawnerScript>();
-        Debug.Log("df");
 
         transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(spritePath);
         transform.GetChild(2).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(spritePath);
