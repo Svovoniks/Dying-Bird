@@ -18,7 +18,6 @@ public class LogicScript : MonoBehaviour
     [SerializeField] private GameObject pauseButton;
     [SerializeField] private GameObject startMessage;
     [SerializeField] private GameObject bestScoreNotifier;
-    [SerializeField] private GameObject missileCountdowm;
     [SerializeField] private Image missileCheckmark;
     [SerializeField] private Image missileImage;
     [SerializeField] private float missileTimeout;
@@ -27,7 +26,7 @@ public class LogicScript : MonoBehaviour
     private int score;
     private int money;
     private bool initialWait;
-    private float missileClock;
+    private float missileTimer;
 
     public bool canFire { get; private set; }
     
@@ -40,9 +39,9 @@ public class LogicScript : MonoBehaviour
         missileImage.sprite = 
             Resources.Load<Sprite>(Utils.MISSILE_PATH +
             Utils.getSpriteName(Utils.MISSILE_KEY, Utils.DEFAULT_MISSILE));
+        missileImage.fillAmount = 1;
 
-        missileClock = 0;
-        Utils.setNumber(0, missileCountdowm, true);
+        missileTimer = missileTimeout;
         missileCheckmark.gameObject.SetActive(false);
         canFire = true;
     }
@@ -62,20 +61,22 @@ public class LogicScript : MonoBehaviour
 
     private void updateMissile()
     {
-        missileClock -= Time.deltaTime;
-        if (missileClock <= 0) 
+        
+        missileTimer += Time.deltaTime;
+        
+        if (missileTimer >= missileTimeout) 
         {
-            missileClock = 0;
+            missileTimer = missileTimeout;
             missileCheckmark.gameObject.SetActive(true);
             canFire = true;
         }
 
-        Utils.setNumber((int) missileClock, missileCountdowm, true);    
+        missileImage.fillAmount = missileTimer/missileTimeout;
     }
 
     public void resetMissile() 
     {
-        missileClock = missileTimeout;
+        missileTimer = 0;
         canFire = false;
         missileCheckmark.gameObject.SetActive(false);
     }

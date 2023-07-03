@@ -24,6 +24,12 @@ public class MissileScript : MonoBehaviour
         transform.position = bird.transform.position;
 
         hitsLeft = int.Parse(DataBase.getData()[spriteName].info);
+
+        if (!Utils.getBool(Utils.SOUND_KEY)) 
+        {
+            transform.GetComponentsInChildren<AudioSource>()[1].gameObject.SetActive(false);
+            transform.GetComponentsInChildren<AudioSource>()[0].gameObject.SetActive(false);
+        }
     }
 
     // Update is called once per frame
@@ -34,13 +40,21 @@ public class MissileScript : MonoBehaviour
 
         if (transform.position.x > destroyAfter)
         {
-            if (hitsLeft > 0)
+            if (hitsLeft > 0 && Utils.getBool(Utils.SOUND_KEY))
             {
                 hitsLeft = 0;
                 transform.GetComponentsInChildren<AudioSource>()[1].Pause();
                 transform.GetComponentsInChildren<AudioSource>()[0].Play();
             }
-            Destroy(gameObject, transform.GetComponentsInChildren<AudioSource>()[0].clip.length);
+            if (Utils.getBool(Utils.SOUND_KEY))
+            {
+                Destroy(gameObject, transform.GetComponentsInChildren<AudioSource>()[0].clip.length);
+            }
+            else 
+            {
+                Destroy(gameObject);
+            }
+            
         }
         
     }
@@ -52,9 +66,12 @@ public class MissileScript : MonoBehaviour
             hitsLeft--;
 
             collision.gameObject.GetComponentInChildren<ParticleSystem>().Play();
-
-            transform.GetComponentsInChildren<AudioSource>()[0].Play();
-
+            if (Utils.getBool(Utils.SOUND_KEY))
+            {
+                
+                transform.GetComponentsInChildren<AudioSource>()[0].Play();
+            }
+            
             collision.gameObject.GetComponent<SpriteRenderer>().enabled = false;
             collision.gameObject.GetComponent<Collider2D>().enabled = false;
 
@@ -64,7 +81,11 @@ public class MissileScript : MonoBehaviour
             transform.GetComponent<SpriteRenderer>().enabled = false;
             transform.GetComponent<Collider2D>().enabled = false;
             transform.GetComponentInChildren<ParticleSystem>().gameObject.SetActive(false);
-            transform.GetComponentsInChildren<AudioSource>()[1].Pause();
+            if (Utils.getBool(Utils.SOUND_KEY)) 
+            {
+                transform.GetComponentsInChildren<AudioSource>()[1].Pause();
+            }
+            
         }
 }
 }
