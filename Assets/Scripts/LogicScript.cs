@@ -18,6 +18,7 @@ public class LogicScript : MonoBehaviour
     [SerializeField] private GameObject pauseButton;
     [SerializeField] private GameObject startMessage;
     [SerializeField] private GameObject bestScoreNotifier;
+    [SerializeField] private GameObject audioCenter;
     [SerializeField] private Image missileCheckmark;
     [SerializeField] private Image missileImage;
     [SerializeField] private float missileTimeout;
@@ -123,16 +124,18 @@ public class LogicScript : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void pauseGame() 
+    public void pauseGame()
     {
         Time.timeScale = 0;
+        AudioListener.pause = true;
         pauseButton.SetActive(false);
         gamePausedScreen.SetActive(true);
     }
 
-    public void continueGame() 
+    public void continueGame()
     {
         pauseButton.SetActive(true);
+        AudioListener.pause = false;
         gamePausedScreen.SetActive(false);
         Time.timeScale = 1;
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -17,17 +18,16 @@ public class LogicMainScript : MonoBehaviour
     [SerializeField] private GameObject itemSelectorScreen;
     [SerializeField] private GameObject settingsScreen;
     [SerializeField] private Image itemImage;
-    [SerializeField] private Text itemName;
+    [SerializeField] private TextMeshProUGUI itemName;
     [SerializeField] private GameObject playersMoney;
-    [SerializeField] private Text priceTag;
+    [SerializeField] private TextMeshProUGUI priceTag;
     [SerializeField] private Image checkmark;
     [SerializeField] private Button selectButton;
-    [SerializeField] private Text selectButtonText;
-    [SerializeField] private Text bestScoreText;
+    [SerializeField] private TextMeshProUGUI selectButtonText;
+    [SerializeField] private TextMeshProUGUI bestScoreText;
     [SerializeField] private float pipesScale;
     [SerializeField] private float missilesScale;
     [SerializeField] private float birdScale;
-
 
     [Range(0f, 1f)]
     [SerializeField] private float mainAudioVolume;
