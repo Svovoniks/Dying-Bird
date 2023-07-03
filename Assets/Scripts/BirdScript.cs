@@ -58,8 +58,9 @@ public class BirdScript : MonoBehaviour
         {
             fire();
         }
-
-        if ((math.abs(transform.position.y) > 1.5 || math.abs(transform.position.x) > 2.6) && isAlive) 
+        Vector3 cornerCoord = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
+        if ((math.abs(transform.position.x) > cornerCoord.x 
+            || math.abs(transform.position.y) > cornerCoord.y) && isAlive) 
         {
             if (Utils.getBool(Utils.SOUND_KEY) && isAlive) 
             {

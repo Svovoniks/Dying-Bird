@@ -6,8 +6,7 @@ using UnityEngine;
 
 public class PipeScript : MonoBehaviour
 {
-    [SerializeField] private float destroyAfter = 1;
-
+    private float destroyAfter;
     private PipeSpawnerScript pipeSpawnerScript;
     private string spritePath;
     // Start is called before the first frame update
@@ -15,7 +14,9 @@ public class PipeScript : MonoBehaviour
     {
         spritePath = Utils.PIPES_PATH + Utils.getSpriteName(Utils.PIPE_KEY, Utils.DEFAULT_PIPE);
 
-        pipeSpawnerScript = GameObject.FindFirstObjectByType<PipeSpawnerScript>();
+        pipeSpawnerScript = FindFirstObjectByType<PipeSpawnerScript>();
+
+        destroyAfter = -pipeSpawnerScript.transform.position.x;
 
         transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(spritePath);
         transform.GetChild(2).GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(spritePath);
