@@ -43,6 +43,11 @@ public class PipeSpawnerScript : MonoBehaviour
         }
     }
 
+    public float getOffset() 
+    {
+        return pipeOffset;
+    }
+
     void spawn() 
     {
         float high = transform.position.y + pipeOffset;

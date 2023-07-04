@@ -6,7 +6,6 @@ using UnityEngine;
 using System.IO;
 using UnityEditor;
 using UnityEngine.UI;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class Utils
 {
