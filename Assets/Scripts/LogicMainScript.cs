@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -136,7 +137,7 @@ public class LogicMainScript : MonoBehaviour
     public void openShop(string path, string key, string dName, bool switchHAndW, float angle, float scale)
     {
         defaultName = dName;
-        itemImageArray = Resources.LoadAll<Sprite>(path);
+        itemImageArray = Resources.LoadAll<Sprite>(path).Where(c => storeItems.ContainsKey(c.name)).ToArray();
         Array.Sort(itemImageArray, 
             (x, y) => storeItems[x.name].price.CompareTo(storeItems[y.name].price));
 

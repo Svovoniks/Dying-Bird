@@ -21,6 +21,8 @@ public class Utils
     public const string DEFAULT_BIRD = "bird0";
     public const string DEFAULT_PIPE = "pipe-green";
     public const string DEFAULT_MISSILE = "grey-missile";
+    public const string BURNED_BIRD = "BurnedBird";
+
 
 
     public const string MISSILE_PATH = "Images/Missiles/";

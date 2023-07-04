@@ -9,6 +9,9 @@ public class MissileScript : MonoBehaviour
 {
     [SerializeField] private float speed = 1f;
     [SerializeField] private float destroyAfter;
+    [SerializeField] private GameObject engine;
+    [SerializeField] private ParticleSystem explosion;
+
     
     private int hitsLeft;
     private BirdScript bird;
@@ -21,7 +24,7 @@ public class MissileScript : MonoBehaviour
             Resources.Load<Sprite>(Utils.MISSILE_PATH + spriteName);
 
         bird = FindObjectOfType<BirdScript>();
-        transform.position = bird.transform.position;
+       // transform.position = bird.transform.position;
 
         hitsLeft = int.Parse(DataBase.getData()[spriteName].info);
 
@@ -36,7 +39,6 @@ public class MissileScript : MonoBehaviour
     void Update()
     {
         transform.position += Vector3.right * speed * Time.deltaTime;
-
 
         if (transform.position.x > destroyAfter)
         {
@@ -67,19 +69,29 @@ public class MissileScript : MonoBehaviour
             collision.gameObject.GetComponentInChildren<ParticleSystem>().Play();
             if (Utils.getBool(Utils.SOUND_KEY))
             {
-                
+
                 transform.GetComponentsInChildren<AudioSource>()[0].Play();
             }
-            
+
             collision.gameObject.GetComponent<SpriteRenderer>().enabled = false;
             collision.gameObject.GetComponent<Collider2D>().enabled = false;
 
+        }
+        else if (collision.gameObject.layer == 8 && hitsLeft > 0) 
+        {
+            hitsLeft = 0;
+            transform.GetComponentsInChildren<AudioSource>()[0].Play();
+            explosion.Play();
+
+            Destroy(gameObject, explosion.main.duration);
+            PipeSpawnerScript pipeSpawnerScript = FindFirstObjectByType<PipeSpawnerScript>();
+            speed = -pipeSpawnerScript.currentSpeed;
         }
         if (hitsLeft == 0) 
         {
             transform.GetComponent<SpriteRenderer>().enabled = false;
             transform.GetComponent<Collider2D>().enabled = false;
-            transform.GetComponentInChildren<ParticleSystem>().gameObject.SetActive(false);
+            engine.SetActive(false);
             if (Utils.getBool(Utils.SOUND_KEY)) 
             {
                 transform.GetComponentsInChildren<AudioSource>()[1].Pause();

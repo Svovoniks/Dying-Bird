@@ -439,7 +439,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -566,7 +566,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Press space to start LMC to exterminate!!!
+  m_text: Press space to start RMC to exterminate!!!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 79ea644f23a6c68489fedacf67feb446, type: 2}
   m_sharedMaterial: {fileID: 5336521127620073996, guid: 79ea644f23a6c68489fedacf67feb446, type: 2}
@@ -1812,6 +1812,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 903444292}
   jump: 2
+  burnedTime: 2
   frameRate: 12
   flapSource: {fileID: 540211582}
   deathSource: {fileID: 1556632405}
@@ -2332,7 +2333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 242822e94e3114c4b933d83b8d425177, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pipe: {fileID: 3291604511452778780, guid: fae9eee38b75dff4b9272a40de0647bb, type: 3}
+  pipe: {fileID: 3256305954124445711, guid: fae9eee38b75dff4b9272a40de0647bb, type: 3}
   interval: 1.5
   pipeOffset: 0.95
   speed: 1
