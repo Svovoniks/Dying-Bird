@@ -51,10 +51,7 @@ public class BirdScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && isAlive) 
         {
             body.velocity = Vector2.up * jump;
-            if (Utils.getBool(Utils.SOUND_KEY)) 
-            {
-                flapSource.Play();
-            }
+            Utils.playAudio(flapSource);
         }
         if (Input.GetKeyDown(KeyCode.Mouse1)) 
         {
@@ -64,10 +61,7 @@ public class BirdScript : MonoBehaviour
         if ((math.abs(transform.position.x) > cornerCoord.x 
             || math.abs(transform.position.y) > cornerCoord.y) && isAlive) 
         {
-            if (Utils.getBool(Utils.SOUND_KEY) && isAlive) 
-            {
-                lostSource.Play();
-            }
+            Utils.playAudio(lostSource);
             
             die();
             return;
@@ -110,18 +104,18 @@ public class BirdScript : MonoBehaviour
         {
             return;
         }
-        if (isAlive && Utils.getBool(Utils.SOUND_KEY)) 
+        if (isAlive) 
         {
-            hitSource.Play();
+            Utils.playAudio(hitSource);
         }
         die();
     }
 
     private void die() 
     {     
-        if (isAlive && Utils.getBool(Utils.SOUND_KEY))
+        if (isAlive)
         {
-            deathSource.Play();
+            Utils.playAudio(deathSource);
         }
         isAlive = false;
         logicScript.gameOver();

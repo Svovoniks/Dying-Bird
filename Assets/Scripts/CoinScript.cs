@@ -27,10 +27,7 @@ public class coinScript : MonoBehaviour
         {
             logicScript.addMoney(1);
             transform.gameObject.SetActive(false);
-            if (Utils.getBool(Utils.SOUND_KEY))
-            {
-                coinSource.Play();
-            }
+            Utils.playAudio(coinSource);
         }
     }  
 }

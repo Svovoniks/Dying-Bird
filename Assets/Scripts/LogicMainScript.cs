@@ -62,10 +62,9 @@ public class LogicMainScript : MonoBehaviour
         audioSource.clip = mainAudio;
         audioSource.loop = true;
         audioSource.volume = mainAudioVolume;
-        if (Utils.getBool(Utils.SOUND_KEY))
-        {
-            audioSource.Play();
-        }
+
+        Utils.playAudio(audioSource);
+
         soundToggle.isOn = Utils.getBool(Utils.SOUND_KEY);
         deathToggle.isOn = Utils.getBool(Utils.DEATH_KEY);
 

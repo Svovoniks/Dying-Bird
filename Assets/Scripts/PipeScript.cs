@@ -55,7 +55,6 @@ public class PipeScript : MonoBehaviour
         }
 
         transform.position += Vector3.left * pipeSpawnerScript.currentSpeed * Time.deltaTime;
-
         transform.position += Vector3.up * moveSpeed * Time.deltaTime;
 
         if (transform.position.x < destroyAfter) 

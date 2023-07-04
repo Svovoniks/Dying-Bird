@@ -47,6 +47,49 @@ public class Utils
         }
         return false;
     }
+
+    public static void playAudio(AudioSource source, AudioClip clip) 
+    {
+        if (!getBool(SOUND_KEY)) 
+        {
+            return;
+        }
+        source.clip = clip;
+        source.Play();
+    }
+    public static void playAudio(AudioSource source) 
+    {
+        if (!getBool(SOUND_KEY))
+        {
+            return;
+        }
+        source.Play();
+    }
+    public static void pauseAudio(AudioSource source)
+    {
+        if (!getBool(SOUND_KEY))
+        {
+            return;
+        }
+        source.Pause();
+    }
+
+    public static void unPauseAudio(AudioSource source)
+    {
+        if (!getBool(SOUND_KEY))
+        {
+            return;
+        }
+        source.UnPause();
+    }
+    public static void stopAudio(AudioSource source)
+    {
+        if (!getBool(SOUND_KEY))
+        {
+            return;
+        }
+        source.Stop();
+    }
     public static void exitGame()
     {
         Application.Quit();

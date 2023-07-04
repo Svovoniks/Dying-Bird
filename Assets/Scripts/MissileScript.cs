@@ -11,6 +11,8 @@ public class MissileScript : MonoBehaviour
     [SerializeField] private float destroyAfter;
     [SerializeField] private GameObject engine;
     [SerializeField] private ParticleSystem explosion;
+    [SerializeField] private AudioSource explosionSource;
+    [SerializeField] private AudioSource missileSource;
 
     
     private int hitsLeft;
@@ -28,11 +30,7 @@ public class MissileScript : MonoBehaviour
 
         hitsLeft = int.Parse(DataBase.getData()[spriteName].info);
 
-        if (!Utils.getBool(Utils.SOUND_KEY)) 
-        {
-            transform.GetComponentsInChildren<AudioSource>()[1].gameObject.SetActive(false);
-            transform.GetComponentsInChildren<AudioSource>()[0].gameObject.SetActive(false);
-        }
+        Utils.playAudio(missileSource);
     }
 
     // Update is called once per frame
@@ -45,18 +43,11 @@ public class MissileScript : MonoBehaviour
             if (hitsLeft > 0 && Utils.getBool(Utils.SOUND_KEY))
             {
                 hitsLeft = 0;
-                transform.GetComponentsInChildren<AudioSource>()[1].Pause();
-                transform.GetComponentsInChildren<AudioSource>()[0].Play();
-            }
-            if (Utils.getBool(Utils.SOUND_KEY))
-            {
-                Destroy(gameObject, transform.GetComponentsInChildren<AudioSource>()[0].clip.length);
-            }
-            else 
-            {
-                Destroy(gameObject);
+                Utils.pauseAudio(missileSource);
+                Utils.playAudio(explosionSource);
             }
             
+            Destroy(gameObject, explosionSource.clip.length);
         }
     }
 
@@ -67,11 +58,7 @@ public class MissileScript : MonoBehaviour
             hitsLeft--;
 
             collision.gameObject.GetComponentInChildren<ParticleSystem>().Play();
-            if (Utils.getBool(Utils.SOUND_KEY))
-            {
-
-                transform.GetComponentsInChildren<AudioSource>()[0].Play();
-            }
+            Utils.playAudio(explosionSource);
 
             collision.gameObject.GetComponent<SpriteRenderer>().enabled = false;
             collision.gameObject.GetComponent<Collider2D>().enabled = false;
@@ -80,7 +67,10 @@ public class MissileScript : MonoBehaviour
         else if (collision.gameObject.layer == 8 && hitsLeft > 0) 
         {
             hitsLeft = 0;
-            transform.GetComponentsInChildren<AudioSource>()[0].Play();
+
+
+            Utils.playAudio(explosionSource);
+
             explosion.Play();
 
             Destroy(gameObject, explosion.main.duration);
@@ -92,10 +82,7 @@ public class MissileScript : MonoBehaviour
             transform.GetComponent<SpriteRenderer>().enabled = false;
             transform.GetComponent<Collider2D>().enabled = false;
             engine.SetActive(false);
-            if (Utils.getBool(Utils.SOUND_KEY)) 
-            {
-                transform.GetComponentsInChildren<AudioSource>()[1].Pause();
-            }
+            Utils.pauseAudio(missileSource);
             
         }
 }
