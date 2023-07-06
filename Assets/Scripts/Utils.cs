@@ -1,11 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Globalization;
-using UnityEngine;
 using System.IO;
-using UnityEditor;
+using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Utils
 {
@@ -22,6 +19,7 @@ public class Utils
     public const string DEFAULT_PIPE = "pipe-green";
     public const string DEFAULT_MISSILE = "grey-missile";
     public const string BURNED_BIRD = "BurnedBird";
+    public const string MAGNET_BIRD = "MagneticBird";
 
 
 
@@ -32,10 +30,10 @@ public class Utils
     public const string UP_PATH = "Images/Birds/up/";
     public const string NUMBERS_PATH = "Images/Numbers/";
     public const string EMPTY_PATH = "Images/empty";
-   
 
 
-    public static bool getBool(string key)
+
+    public static bool GetBool(string key)
     {
         if (!PlayerPrefs.HasKey(key))
         {
@@ -48,54 +46,54 @@ public class Utils
         return false;
     }
 
-    public static void playAudio(AudioSource source, AudioClip clip) 
+    public static void PlayAudio(AudioSource source, AudioClip clip)
     {
-        if (!getBool(SOUND_KEY)) 
+        if (!GetBool(SOUND_KEY))
         {
             return;
         }
         source.clip = clip;
         source.Play();
     }
-    public static void playAudio(AudioSource source) 
+    public static void PlayAudio(AudioSource source)
     {
-        if (!getBool(SOUND_KEY))
+        if (!GetBool(SOUND_KEY))
         {
             return;
         }
         source.Play();
     }
-    public static void pauseAudio(AudioSource source)
+    public static void PauseAudio(AudioSource source)
     {
-        if (!getBool(SOUND_KEY))
+        if (!GetBool(SOUND_KEY))
         {
             return;
         }
         source.Pause();
     }
 
-    public static void unPauseAudio(AudioSource source)
+    public static void UnPauseAudio(AudioSource source)
     {
-        if (!getBool(SOUND_KEY))
+        if (!GetBool(SOUND_KEY))
         {
             return;
         }
         source.UnPause();
     }
-    public static void stopAudio(AudioSource source)
+    public static void StopAudio(AudioSource source)
     {
-        if (!getBool(SOUND_KEY))
+        if (!GetBool(SOUND_KEY))
         {
             return;
         }
         source.Stop();
     }
-    public static void exitGame()
+    public static void ExitGame()
     {
         Application.Quit();
     }
 
-    public static void setNumber(int number, GameObject window, bool fillWithZeroes)
+    public static void SetNumber(int number, GameObject window, bool fillWithZeroes)
     {
         if (window == null)
         {
@@ -105,21 +103,26 @@ public class Utils
         {
             if (number == 0 && i > 0 && !fillWithZeroes)
             {
-                setOneNuber(window, i, EMPTY_PATH);
+                SetOneNuber(window, i, EMPTY_PATH);
                 continue;
             }
-            setOneNuber(window, i, NUMBERS_PATH + number%10);
+            SetOneNuber(window, i, NUMBERS_PATH + number % 10);
             number /= 10;
         }
     }
 
-    private static void setOneNuber(GameObject window, int idx, string spritePath) 
+    public static bool CheckProbability(float probability) 
+    {
+        return Random.Range(1, 100) <= probability;
+    }
+
+    private static void SetOneNuber(GameObject window, int idx, string spritePath)
     {
         window.transform.GetChild(idx).GetComponent<Image>().sprite =
                     Resources.Load<Sprite>(spritePath);
     }
 
-    public static string getSpriteName(string key, string defaultPath) 
+    public static string GetSpriteName(string key, string defaultPath)
     {
         if (PlayerPrefs.HasKey(key))
         {
@@ -129,19 +132,19 @@ public class Utils
     }
 }
 
-public struct Item 
+public struct Item
 {
-    
+
     public int id;
     public string name;
     public int price;
     public bool bought;
     public string prettyName;
     public string info;
-    public Item(int id, string name, int price, int bought, string prettyName, string info) 
+    public Item(int id, string name, int price, int bought, string prettyName, string info)
     {
         this.id = id;
-        this.name = name;    
+        this.name = name;
         this.price = price;
         this.bought = bought == 1 ? true : false;
         this.prettyName = prettyName;
@@ -159,30 +162,30 @@ public class DataBase
     private const string DATABASE_PATH = "flappy bird_data/Resources/Database.db";
 
     //private const string DATABASE_PATH = "db";// For Unity Editor
-    private static void initiateData()
+    private static void InitiateData()
     {
         File.WriteAllText(DATABASE_PATH, Resources.Load<TextAsset>(ASSESTS_PATH).text);
-        Dictionary<string, Item> data = getData();
+        Dictionary<string, Item> data = GetData();
 
-        string[] arr = 
+        string[] arr =
         {
-            Utils.getSpriteName(Utils.BIRD_KEY, Utils.DEFAULT_BIRD),
-            Utils.getSpriteName(Utils.PIPE_KEY, Utils.DEFAULT_PIPE),
-            Utils.getSpriteName(Utils.MISSILE_KEY, Utils.DEFAULT_MISSILE)
+            Utils.GetSpriteName(Utils.BIRD_KEY, Utils.DEFAULT_BIRD),
+            Utils.GetSpriteName(Utils.PIPE_KEY, Utils.DEFAULT_PIPE),
+            Utils.GetSpriteName(Utils.MISSILE_KEY, Utils.DEFAULT_MISSILE)
         };
 
-        foreach (string i in arr) 
+        foreach (string i in arr)
         {
             data[i] = new Item(data[i].id, data[i].name, data[i].price, 1, data[i].prettyName, data[i].info);
         }
-        storeData(data);
+        StoreData(data);
     }
-    public static Dictionary<string, Item> getData()
+    public static Dictionary<string, Item> GetData()
     {
         Dictionary<string, Item> dict = new();
         if (!File.Exists(DATABASE_PATH))
         {
-            initiateData();
+            InitiateData();
         }
         string[] lines = File.ReadAllLines(DATABASE_PATH);
 
@@ -207,7 +210,7 @@ public class DataBase
         return dict;
     }
 
-    public static void storeData(Dictionary<string, Item> dict)
+    public static void StoreData(Dictionary<string, Item> dict)
     {
         string lines = "id,name,price,bought,pretty_name,info\n";
         foreach (Item item in dict.Values)

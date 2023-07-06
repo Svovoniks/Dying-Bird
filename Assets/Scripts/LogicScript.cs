@@ -1,18 +1,17 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Xml.Serialization;
+using System.Linq;
+using System.Net;
+using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 
 public class LogicScript : MonoBehaviour
 {
-    
+
     [SerializeField] private GameObject scoreWindow;
     [SerializeField] private GameObject moneyWindow;
+    [SerializeField] private GameObject magnetWindow;
     [SerializeField] private GameObject gameOverScreen;
     [SerializeField] private GameObject gamePausedScreen;
     [SerializeField] private GameObject pauseButton;
@@ -21,131 +20,212 @@ public class LogicScript : MonoBehaviour
     [SerializeField] private GameObject audioCenter;
     [SerializeField] private Image missileCheckmark;
     [SerializeField] private Image missileImage;
+    [SerializeField] private Image magnetBar;
     [SerializeField] private float missileTimeout;
+    [SerializeField] private float magnetTime;
+    [SerializeField][Range(0, 9)] private int magnetLimit;
+    [SerializeField] private float coinSpeed;
 
 
-    private int score;
-    private int money;
     private bool initialWait;
+    private bool playing;
     private float missileTimer;
+    private float lastMagnetTime;
 
-    public bool canFire { get; private set; }
+
+    private int _score;
+    public int Score
+    {
+        get 
+        {
+            return _score;
+        }
+        set 
+        {
+            _score = value;
+            Utils.SetNumber(_score, scoreWindow, true);
+        }
+    }
+
+    private int _money;
+    public int Money
+    {
+        get 
+        {
+            return _money;
+        }
+        set
+        {
+            _money = value;
+            PlayerPrefs.SetInt(Utils.MONEY_KEY, _money);
+            Utils.SetNumber(_money, moneyWindow, false);
+        }
+    }
+
+    private int _magnets;
+    public int Magnets
+    {
+        get
+        {
+            return _magnets;
+        }
+        set
+        {
+            if (value > magnetLimit) 
+            {
+                return;
+            }
+            _magnets = value;
+            Utils.SetNumber(_magnets, magnetWindow, false);
+        }
+    }
     
+
+    public bool CanFire { get; private set; }
+    public bool UsingMagnet { get; private set; }
+
     private void Start()
     {
-        initialPause();
-        money = PlayerPrefs.GetInt(Utils.MONEY_KEY);
-        Utils.setNumber(money, moneyWindow, false);
-        
-        missileImage.sprite = 
+        InitialPause();
+
+        Score = 0;
+        Magnets = 0;
+
+        UsingMagnet = false;
+
+        lastMagnetTime = -magnetTime;
+
+        AudioListener.pause = false;
+
+        Money = PlayerPrefs.GetInt(Utils.MONEY_KEY);
+
+        missileImage.sprite =
             Resources.Load<Sprite>(Utils.MISSILE_PATH +
-            Utils.getSpriteName(Utils.MISSILE_KEY, Utils.DEFAULT_MISSILE));
+            Utils.GetSpriteName(Utils.MISSILE_KEY, Utils.DEFAULT_MISSILE));
         missileImage.fillAmount = 1;
 
         missileTimer = missileTimeout;
         missileCheckmark.gameObject.SetActive(false);
-        canFire = true;
+        CanFire = true;
     }
 
     private void Update()
     {
         if (initialWait && Input.GetKeyDown(KeyCode.Space))
         {
-           realStart();
+            RealStart();
         }
 
-        if (!missileCheckmark.IsActive() && !initialWait) 
+        if (Input.GetKeyDown(KeyCode.M)) 
         {
-            updateMissile();
+            UseMagnet();
+        }
+
+        if (UsingMagnet)
+        {
+            if (lastMagnetTime + magnetTime < Time.time || !playing)
+            {
+                UsingMagnet = false;
+                magnetBar.gameObject.SetActive(false);
+            }
+
+            magnetBar.fillAmount = (lastMagnetTime + magnetTime - Time.time) / magnetTime;
+        }
+
+        if (!missileCheckmark.IsActive() && !initialWait)
+        {
+            UpdateMissile();
         }
     }
-
-    private void updateMissile()
+    private void UpdateMissile()
     {
-        
+
         missileTimer += Time.deltaTime;
-        
-        if (missileTimer >= missileTimeout) 
+
+        if (missileTimer >= missileTimeout)
         {
             missileTimer = missileTimeout;
             missileCheckmark.gameObject.SetActive(true);
-            canFire = true;
+            CanFire = true;
         }
 
-        missileImage.fillAmount = missileTimer/missileTimeout;
+        missileImage.fillAmount = missileTimer / missileTimeout;
     }
 
-    public void resetMissile() 
+    public void ResetMissile()
     {
         missileTimer = 0;
-        canFire = false;
+        CanFire = false;
         missileCheckmark.gameObject.SetActive(false);
     }
 
-    private void initialPause() 
+    private void InitialPause()
     {
         initialWait = true;
         Time.timeScale = 0;
     }
-    private void realStart() 
+    private void RealStart()
     {
         initialWait = false;
+        playing = true;
         startMessage.SetActive(false);
         Time.timeScale = 1;
     }
-    public void addScore(int scoreToAdd) 
+    private void UseMagnet()
     {
-        score += scoreToAdd;
-        Utils.setNumber(score, scoreWindow, true);
+        if (lastMagnetTime + magnetTime < Time.time && Magnets > 0) 
+        {
+            Magnets--;
+            lastMagnetTime = Time.time;
+            UsingMagnet = true;
+            magnetBar.gameObject.SetActive(true);
+        }
     }
-    public void addMoney(int moneyToAdd)
+    public void GameOver()
     {
-        money += moneyToAdd;
-        PlayerPrefs.SetInt(Utils.MONEY_KEY, money);
-        Utils.setNumber(money, moneyWindow, false);
-    }
-    public void gameOver()
-    {
+        playing = false;
         int bestScore = PlayerPrefs.HasKey(Utils.BEST_SCORE_KEY) ?
             PlayerPrefs.GetInt(Utils.BEST_SCORE_KEY) : 0;
 
-        if (bestScore < score)
+        if (bestScore < Score)
         {
-            PlayerPrefs.SetInt(Utils.BEST_SCORE_KEY, score);
-            bestScoreNotifier.gameObject.SetActive(true);
+            PlayerPrefs.SetInt(Utils.BEST_SCORE_KEY, Score);
+            bestScoreNotifier.SetActive(true);
         }
 
         pauseButton.SetActive(false);
         gameOverScreen.SetActive(true);
     }
 
-    public void restartGame()
+    public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void pauseGame()
+    public void PauseGame()
     {
+        playing = false;
         Time.timeScale = 0;
         AudioListener.pause = true;
         pauseButton.SetActive(false);
         gamePausedScreen.SetActive(true);
     }
 
-    public void continueGame()
+    public void ContinueGame()
     {
+        playing = true;
         pauseButton.SetActive(true);
         AudioListener.pause = false;
         gamePausedScreen.SetActive(false);
         Time.timeScale = 1;
     }
 
-    public void exitGame()
+    public void ExitGame()
     {
-        Utils.exitGame();
+        Utils.ExitGame();
     }
 
-    public void openMenu() 
+    public void OpenMenu()
     {
         SceneManager.LoadScene(0);
     }

@@ -1,9 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class MissileScript : MonoBehaviour
 {
@@ -14,23 +9,19 @@ public class MissileScript : MonoBehaviour
     [SerializeField] private AudioSource explosionSource;
     [SerializeField] private AudioSource missileSource;
 
-    
+
     private int hitsLeft;
-    private BirdScript bird;
 
     // Start is called before the first frame update
     void Start()
     {
-        string spriteName = Utils.getSpriteName(Utils.MISSILE_KEY, Utils.DEFAULT_MISSILE);
-        transform.GetComponent<SpriteRenderer>().sprite = 
+        string spriteName = Utils.GetSpriteName(Utils.MISSILE_KEY, Utils.DEFAULT_MISSILE);
+        transform.GetComponent<SpriteRenderer>().sprite =
             Resources.Load<Sprite>(Utils.MISSILE_PATH + spriteName);
 
-        bird = FindObjectOfType<BirdScript>();
-       // transform.position = bird.transform.position;
+        hitsLeft = int.Parse(DataBase.GetData()[spriteName].info);
 
-        hitsLeft = int.Parse(DataBase.getData()[spriteName].info);
-
-        Utils.playAudio(missileSource);
+        Utils.PlayAudio(missileSource);
     }
 
     // Update is called once per frame
@@ -40,13 +31,13 @@ public class MissileScript : MonoBehaviour
 
         if (transform.position.x > destroyAfter)
         {
-            if (hitsLeft > 0 && Utils.getBool(Utils.SOUND_KEY))
+            if (hitsLeft > 0 && Utils.GetBool(Utils.SOUND_KEY))
             {
                 hitsLeft = 0;
-                Utils.pauseAudio(missileSource);
-                Utils.playAudio(explosionSource);
+                Utils.PauseAudio(missileSource);
+                Utils.PlayAudio(explosionSource);
             }
-            
+
             Destroy(gameObject, explosionSource.clip.length);
         }
     }
@@ -58,32 +49,32 @@ public class MissileScript : MonoBehaviour
             hitsLeft--;
 
             collision.gameObject.GetComponentInChildren<ParticleSystem>().Play();
-            Utils.playAudio(explosionSource);
+            Utils.PlayAudio(explosionSource);
 
             collision.gameObject.GetComponent<SpriteRenderer>().enabled = false;
             collision.gameObject.GetComponent<Collider2D>().enabled = false;
 
         }
-        else if (collision.gameObject.layer == 8 && hitsLeft > 0) 
+        else if (collision.gameObject.layer == 8 && hitsLeft > 0)
         {
             hitsLeft = 0;
 
 
-            Utils.playAudio(explosionSource);
+            Utils.PlayAudio(explosionSource);
 
             explosion.Play();
 
             Destroy(gameObject, explosion.main.duration);
             PipeSpawnerScript pipeSpawnerScript = FindFirstObjectByType<PipeSpawnerScript>();
-            speed = -pipeSpawnerScript.currentSpeed;
+            speed = -pipeSpawnerScript.CurrentSpeed;
         }
-        if (hitsLeft == 0) 
+        if (hitsLeft == 0)
         {
             transform.GetComponent<SpriteRenderer>().enabled = false;
             transform.GetComponent<Collider2D>().enabled = false;
             engine.SetActive(false);
-            Utils.pauseAudio(missileSource);
-            
+            Utils.PauseAudio(missileSource);
+
         }
-}
+    }
 }

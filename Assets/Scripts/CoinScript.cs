@@ -1,33 +1,61 @@
-using System.Collections;
-using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
-public class coinScript : MonoBehaviour
+public class CoinScript : MonoBehaviour
 {
-    [SerializeField] private int probability = 20;
+    [SerializeField] private AudioSource coinSource;
+    [SerializeField] private float coinSpeed;
 
+    
     private LogicScript logicScript;
-    private AudioSource coinSource;
+    private BirdScript bird;
+    private Vector3 cornerCoord;
+    private Vector3 initialLocalPosition; 
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        if (Random.Range(1, 100) > probability)
-        {
-            transform.gameObject.SetActive(false);
-        }
-
-        coinSource = GameObject.FindGameObjectWithTag("CoinSource").GetComponent<AudioSource>();
+        initialLocalPosition = transform.localPosition;
+        cornerCoord = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
+        bird = FindObjectOfType<BirdScript>();
         logicScript = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
+    }
+
+    private void Update()
+    {
+        if (logicScript.UsingMagnet)
+        {
+            ComeALittleBitCloser();
+            
+        }
+        else if (transform.localPosition != initialLocalPosition) 
+        {
+            GoHome();
+        }
+    }
+
+    private void ComeALittleBitCloser()
+    {  
+        if (math.abs(transform.position.x) > cornerCoord.x)
+        {
+            return;
+        }
+        Vector3 moveVector = bird.transform.position - transform.position;
+        transform.position += moveVector.normalized * coinSpeed * Time.deltaTime;
+    }
+
+    private void GoHome() 
+    {
+        Vector3 moveVector = initialLocalPosition - transform.localPosition;
+        transform.position += moveVector.normalized * coinSpeed * Time.deltaTime;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.layer == 3)
         {
-            logicScript.addMoney(1);
+            logicScript.Money += 1;
+            Utils.PlayAudio(coinSource);
             transform.gameObject.SetActive(false);
-            Utils.playAudio(coinSource);
         }
-    }  
+    }
 }

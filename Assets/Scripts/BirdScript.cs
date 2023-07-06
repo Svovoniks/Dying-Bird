@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.IO.LowLevel.Unsafe;
 using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class BirdScript : MonoBehaviour
@@ -31,13 +27,15 @@ public class BirdScript : MonoBehaviour
     private LogicScript logicScript;
     private float lastBurn;
     private bool burning;
+    private bool magnetized;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        spriteName = Utils.getSpriteName(Utils.BIRD_KEY, Utils.DEFAULT_BIRD);
+        spriteName = Utils.GetSpriteName(Utils.BIRD_KEY, Utils.DEFAULT_BIRD);
 
-        loadFrames(spriteName);
+        LoadFrames(spriteName);
 
         birdRenderer = transform.GetComponent<SpriteRenderer>();
         birdRenderer.sprite = frames[0];
@@ -48,22 +46,22 @@ public class BirdScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isAlive) 
+        if (Input.GetKeyDown(KeyCode.Space) && isAlive)
         {
             body.velocity = Vector2.up * jump;
-            Utils.playAudio(flapSource);
+            Utils.PlayAudio(flapSource);
         }
-        if (Input.GetKeyDown(KeyCode.Mouse1)) 
+        if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            fire();
+            Fire();
         }
         Vector3 cornerCoord = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
-        if ((math.abs(transform.position.x) > cornerCoord.x 
-            || math.abs(transform.position.y) > cornerCoord.y) && isAlive) 
+        if ((math.abs(transform.position.x) > cornerCoord.x
+            || math.abs(transform.position.y) > cornerCoord.y) && isAlive)
         {
-            Utils.playAudio(lostSource);
-            
-            die();
+            Utils.PlayAudio(lostSource);
+
+            Die();
             return;
         }
 
@@ -76,14 +74,38 @@ public class BirdScript : MonoBehaviour
             birdRenderer.sprite = frames[currentFrameIndex];
         }
 
-        if (burning && lastBurn + burnedTime <= Time.time) 
+        if (burning && lastBurn + burnedTime <= Time.time)
         {
-            loadFrames(spriteName);
+            if (magnetized)
+            {
+                LoadFrames(Utils.MAGNET_BIRD);
+            }
+            else
+            {
+                LoadFrames(spriteName);
+            }
             burning = false;
+        }
+
+        if (logicScript.UsingMagnet)
+        {
+            if (!magnetized && !burning)
+            {
+                LoadFrames(Utils.MAGNET_BIRD);
+                magnetized = true;
+            }
+        }
+        else if (magnetized)
+        {
+            magnetized = false;
+            if (!burning) 
+            {
+                LoadFrames(spriteName);
+            }
         }
     }
 
-    private void loadFrames(string name) 
+    private void LoadFrames(string name)
     {
         frames[0] = Resources.Load<Sprite>(Utils.DOWN_PATH + name);
         frames[1] = Resources.Load<Sprite>(Utils.MIDDLE_PATH + name);
@@ -92,7 +114,7 @@ public class BirdScript : MonoBehaviour
 
     private void OnParticleCollision(GameObject other)
     {
-        loadFrames(Utils.BURNED_BIRD);
+        LoadFrames(Utils.BURNED_BIRD);
         burning = true;
         lastBurn = Time.time;
     }
@@ -104,28 +126,28 @@ public class BirdScript : MonoBehaviour
         {
             return;
         }
-        if (isAlive) 
-        {
-            Utils.playAudio(hitSource);
-        }
-        die();
-    }
-
-    private void die() 
-    {     
         if (isAlive)
         {
-            Utils.playAudio(deathSource);
+            Utils.PlayAudio(hitSource);
         }
-        isAlive = false;
-        logicScript.gameOver();
+        Die();
     }
 
-    private void fire() 
+    private void Die()
     {
-        if (isAlive && Time.timeScale == 1 && logicScript.canFire) 
+        if (isAlive)
         {
-            logicScript.resetMissile();
+            Utils.PlayAudio(deathSource);
+        }
+        isAlive = false;
+        logicScript.GameOver();
+    }
+
+    private void Fire()
+    {
+        if (isAlive && Time.timeScale == 1 && logicScript.CanFire)
+        {
+            logicScript.ResetMissile();
             Vector3 missilePosition = new Vector3
                 (
                 transform.position.x,

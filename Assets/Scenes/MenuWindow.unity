@@ -210,7 +210,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: openMissileShop
+        m_MethodName: OpenMissileShop
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -710,7 +710,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: startTheGame
+        m_MethodName: StartTheGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1540,7 +1540,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: exit
+        m_MethodName: Exit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2041,7 +2041,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: openShopSelector
+        m_MethodName: OpenShopSelector
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2175,7 +2175,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: openMain
+        m_MethodName: OpenMain
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2387,7 +2387,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: setSound
+        m_MethodName: SetSound
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3207,7 +3207,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: openPipeShop
+        m_MethodName: OpenPipeShop
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3340,7 +3340,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: openSettings
+        m_MethodName: OpenSettings
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3691,7 +3691,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: setDeathMode
+        m_MethodName: SetDeathMode
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3787,7 +3787,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: cycleLeft
+        m_MethodName: CycleLeft
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4389,7 +4389,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: openBirdShop
+        m_MethodName: OpenBirdShop
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4737,7 +4737,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: seletItem
+        m_MethodName: SeletItem
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4871,7 +4871,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: openMain
+        m_MethodName: OpenMain
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5140,7 +5140,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: openShopSelector
+        m_MethodName: OpenShopSelector
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5622,7 +5622,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 576248933}
         m_TargetAssemblyTypeName: LogicMainScript, Assembly-CSharp
-        m_MethodName: cycleRight
+        m_MethodName: CycleRight
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
