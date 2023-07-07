@@ -21,7 +21,7 @@ public class MissileScript : MonoBehaviour
 
         hitsLeft = int.Parse(DataBase.GetData()[spriteName].info);
 
-        Utils.PlayAudio(missileSource);
+        missileSource.Play();
     }
 
     // Update is called once per frame
@@ -34,8 +34,8 @@ public class MissileScript : MonoBehaviour
             if (hitsLeft > 0 && Utils.GetBool(Utils.SOUND_KEY))
             {
                 hitsLeft = 0;
-                Utils.PauseAudio(missileSource);
-                Utils.PlayAudio(explosionSource);
+                missileSource.Play();
+                explosionSource.Play();
             }
 
             Destroy(gameObject, explosionSource.clip.length);
@@ -49,7 +49,7 @@ public class MissileScript : MonoBehaviour
             hitsLeft--;
 
             collision.gameObject.GetComponentInChildren<ParticleSystem>().Play();
-            Utils.PlayAudio(explosionSource);
+            explosionSource.Play();
 
             collision.gameObject.GetComponent<SpriteRenderer>().enabled = false;
             collision.gameObject.GetComponent<Collider2D>().enabled = false;
@@ -60,7 +60,7 @@ public class MissileScript : MonoBehaviour
             hitsLeft = 0;
 
 
-            Utils.PlayAudio(explosionSource);
+            explosionSource.Play();
 
             explosion.Play();
 
@@ -73,7 +73,7 @@ public class MissileScript : MonoBehaviour
             transform.GetComponent<SpriteRenderer>().enabled = false;
             transform.GetComponent<Collider2D>().enabled = false;
             engine.SetActive(false);
-            Utils.PauseAudio(missileSource);
+            missileSource.Play();
 
         }
     }

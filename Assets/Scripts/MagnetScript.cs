@@ -11,7 +11,7 @@ public class MagnetScript : MonoBehaviour
         if (collision.gameObject.layer == 3)
         {
             GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>().Magnets += 1;
-            Utils.PlayAudio(magnetSource);
+            magnetSource.Play();
             transform.gameObject.SetActive(false);
         }
     }

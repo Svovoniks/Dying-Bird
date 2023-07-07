@@ -54,7 +54,7 @@ public class CoinScript : MonoBehaviour
         if (collision.gameObject.layer == 3)
         {
             logicScript.Money += 1;
-            Utils.PlayAudio(coinSource);
+            coinSource.Play();
             transform.gameObject.SetActive(false);
         }
     }

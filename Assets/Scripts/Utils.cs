@@ -1,13 +1,18 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using Unity.Burst;
+using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Assertions.Comparers;
 using UnityEngine.UI;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Utils
 {
     public const string BEST_SCORE_KEY = "best_score";
     public const string SOUND_KEY = "sound";
+    public const string VOLUME_KEY = "volume";
     public const string DEATH_KEY = "death";
     public const string MONEY_KEY = "money";
     public const string BIRD_KEY = "bird";
@@ -21,6 +26,9 @@ public class Utils
     public const string BURNED_BIRD = "BurnedBird";
     public const string MAGNET_BIRD = "MagneticBird";
 
+
+    public const float MAX_VOLUME = 1f;
+    public const float MIN_VOLUME = 0.00000001f;
 
 
     public const string MISSILE_PATH = "Images/Missiles/";
@@ -46,48 +54,16 @@ public class Utils
         return false;
     }
 
-    public static void PlayAudio(AudioSource source, AudioClip clip)
+    public static float DecibelToVolume(float decibel)
     {
-        if (!GetBool(SOUND_KEY))
-        {
-            return;
-        }
-        source.clip = clip;
-        source.Play();
-    }
-    public static void PlayAudio(AudioSource source)
-    {
-        if (!GetBool(SOUND_KEY))
-        {
-            return;
-        }
-        source.Play();
-    }
-    public static void PauseAudio(AudioSource source)
-    {
-        if (!GetBool(SOUND_KEY))
-        {
-            return;
-        }
-        source.Pause();
+        return math.exp10(decibel / 20);
     }
 
-    public static void UnPauseAudio(AudioSource source)
+    public static float VolumeToDecibel(float volume)
     {
-        if (!GetBool(SOUND_KEY))
-        {
-            return;
-        }
-        source.UnPause();
+        return math.log10(volume) * 20;
     }
-    public static void StopAudio(AudioSource source)
-    {
-        if (!GetBool(SOUND_KEY))
-        {
-            return;
-        }
-        source.Stop();
-    }
+
     public static void ExitGame()
     {
         Application.Quit();
@@ -111,15 +87,40 @@ public class Utils
         }
     }
 
-    public static bool CheckProbability(float probability) 
+    public static bool CheckProbability(float probability)
     {
-        return Random.Range(1, 100) <= probability;
+        return UnityEngine.Random.Range(1, 100) <= probability;
     }
 
     private static void SetOneNuber(GameObject window, int idx, string spritePath)
     {
         window.transform.GetChild(idx).GetComponent<Image>().sprite =
                     Resources.Load<Sprite>(spritePath);
+    }
+
+    public static T GetPlayerPref<T>(string key, T defaultValue)
+    {
+        if (!PlayerPrefs.HasKey(key)) 
+        {
+            return defaultValue;
+        }
+
+        if (typeof(T) == typeof(float)) 
+        {
+            return PlayerPrefs.GetFloat(key).ConvertTo<T>();
+        }
+
+        if (typeof(T) == typeof(int))
+        {
+            return PlayerPrefs.GetInt(key).ConvertTo<T>();
+        }
+
+        if (typeof(T) == typeof(string))
+        {
+            return PlayerPrefs.GetString(key).ConvertTo<T>();
+        }
+
+        return defaultValue;
     }
 
     public static string GetSpriteName(string key, string defaultPath)
@@ -159,9 +160,9 @@ public struct Item
 public class DataBase
 {
     private const string ASSESTS_PATH = "db";
-    private const string DATABASE_PATH = "flappy bird_data/Resources/Database.db";
+    //private const string DATABASE_PATH = "flappy bird_data/Resources/Database.db";
 
-    //private const string DATABASE_PATH = "db";// For Unity Editor
+    private const string DATABASE_PATH = "db";// For Unity Editor
     private static void InitiateData()
     {
         File.WriteAllText(DATABASE_PATH, Resources.Load<TextAsset>(ASSESTS_PATH).text);

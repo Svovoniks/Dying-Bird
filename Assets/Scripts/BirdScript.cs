@@ -49,7 +49,7 @@ public class BirdScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && isAlive)
         {
             body.velocity = Vector2.up * jump;
-            Utils.PlayAudio(flapSource);
+            flapSource.Play();
         }
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
@@ -59,7 +59,7 @@ public class BirdScript : MonoBehaviour
         if ((math.abs(transform.position.x) > cornerCoord.x
             || math.abs(transform.position.y) > cornerCoord.y) && isAlive)
         {
-            Utils.PlayAudio(lostSource);
+            lostSource.Play(); 
 
             Die();
             return;
@@ -128,7 +128,7 @@ public class BirdScript : MonoBehaviour
         }
         if (isAlive)
         {
-            Utils.PlayAudio(hitSource);
+            hitSource.Play();
         }
         Die();
     }
@@ -137,7 +137,7 @@ public class BirdScript : MonoBehaviour
     {
         if (isAlive)
         {
-            Utils.PlayAudio(deathSource);
+            deathSource.Play();
         }
         isAlive = false;
         logicScript.GameOver();
