@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -8,12 +9,13 @@ using UnityEngine.UI;
 
 public class LogicScript : MonoBehaviour
 {
-
     [SerializeField] private GameObject scoreWindow;
+    [SerializeField] private GameObject gameOverScoreWindow;
     [SerializeField] private GameObject moneyWindow;
     [SerializeField] private GameObject magnetWindow;
     [SerializeField] private GameObject gameOverScreen;
     [SerializeField] private GameObject gamePausedScreen;
+    [SerializeField] private GameObject gameOverlayScreen;
     [SerializeField] private GameObject pauseButton;
     [SerializeField] private GameObject startMessage;
     [SerializeField] private GameObject bestScoreNotifier;
@@ -31,7 +33,10 @@ public class LogicScript : MonoBehaviour
     private bool playing;
     private float missileTimer;
     private float lastMagnetTime;
-
+    private GameObject[] screenArray;
+    private int GAME_OVER_SCREEN_IDX = 0;
+    private int GAME_PAUSED_SCREEN_IDX = 1;
+    private int GAME_OVERLAY_SCREEN_IDX = 2;
 
     private int _score;
     public int Score
@@ -91,11 +96,19 @@ public class LogicScript : MonoBehaviour
         Score = 0;
         Magnets = 0;
 
+        screenArray = new GameObject[]
+        {
+            gameOverScreen,
+            gamePausedScreen,
+            gameOverlayScreen
+        };
+
         UsingMagnet = false;
 
         lastMagnetTime = -magnetTime;
 
         AudioListener.pause = false;
+        
 
         Money = PlayerPrefs.GetInt(Utils.MONEY_KEY);
 
@@ -116,7 +129,7 @@ public class LogicScript : MonoBehaviour
             RealStart();
         }
 
-        if (Input.GetKeyDown(KeyCode.M)) 
+        if (Input.GetKeyDown(KeyCode.Mouse2)) 
         {
             UseMagnet();
         }
@@ -137,6 +150,8 @@ public class LogicScript : MonoBehaviour
             UpdateMissile();
         }
     }
+
+    
     private void UpdateMissile()
     {
 
@@ -192,9 +207,8 @@ public class LogicScript : MonoBehaviour
             PlayerPrefs.SetInt(Utils.BEST_SCORE_KEY, Score);
             bestScoreNotifier.SetActive(true);
         }
-
-        pauseButton.SetActive(false);
-        gameOverScreen.SetActive(true);
+        Utils.SetNumber(Score, gameOverScoreWindow, true);
+        Utils.OpenScreen(GAME_OVER_SCREEN_IDX, screenArray);
     }
 
     public void RestartGame()
@@ -207,16 +221,14 @@ public class LogicScript : MonoBehaviour
         playing = false;
         Time.timeScale = 0;
         AudioListener.pause = true;
-        pauseButton.SetActive(false);
-        gamePausedScreen.SetActive(true);
+        Utils.OpenScreen(GAME_PAUSED_SCREEN_IDX, screenArray);
     }
 
     public void ContinueGame()
     {
+        Utils.OpenScreen(GAME_OVERLAY_SCREEN_IDX, screenArray);
         playing = true;
-        pauseButton.SetActive(true);
         AudioListener.pause = false;
-        gamePausedScreen.SetActive(false);
         Time.timeScale = 1;
     }
 

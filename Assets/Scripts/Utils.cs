@@ -20,6 +20,7 @@ public class Utils
     public const string MISSILE_KEY = "missile";
 
 
+
     public const string DEFAULT_BIRD = "bird0";
     public const string DEFAULT_PIPE = "pipe-green";
     public const string DEFAULT_MISSILE = "grey-missile";
@@ -85,6 +86,19 @@ public class Utils
             SetOneNuber(window, i, NUMBERS_PATH + number % 10);
             number /= 10;
         }
+    }
+
+    public static void OpenScreen(int num, GameObject[] screenArray)
+    {
+        for (int i = 0; i < screenArray.Length; i++)
+        {
+            if (i == num)
+            {
+                continue;
+            }
+            screenArray[i].gameObject.SetActive(false);
+        }
+        screenArray[num].gameObject.SetActive(true);
     }
 
     public static bool CheckProbability(float probability)
@@ -160,9 +174,9 @@ public struct Item
 public class DataBase
 {
     private const string ASSESTS_PATH = "db";
-    //private const string DATABASE_PATH = "flappy bird_data/Resources/Database.db";
+    private const string DATABASE_PATH = "flappy bird_data/Resources/Database.db";
 
-    private const string DATABASE_PATH = "db";// For Unity Editor
+    //private const string DATABASE_PATH = "db";// For Unity Editor
     private static void InitiateData()
     {
         File.WriteAllText(DATABASE_PATH, Resources.Load<TextAsset>(ASSESTS_PATH).text);

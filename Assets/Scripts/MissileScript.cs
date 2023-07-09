@@ -73,7 +73,7 @@ public class MissileScript : MonoBehaviour
             transform.GetComponent<SpriteRenderer>().enabled = false;
             transform.GetComponent<Collider2D>().enabled = false;
             engine.SetActive(false);
-            missileSource.Play();
+            missileSource.Pause();
 
         }
     }

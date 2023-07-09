@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using TMPro;
 using System.Linq;
 using Unity.Mathematics;
+using JetBrains.Annotations;
+using System.IO;
 
 public class SettingsScript : MonoBehaviour
 {
@@ -17,28 +19,40 @@ public class SettingsScript : MonoBehaviour
     [SerializeField] private Slider volumeSlider;
 
 
-    private Resolution[] resolutions;
-    private List<string> DISPLAY_TYPES = new(){"FullScreen", "Windowed"};
+    private List<string> resolutionList = new();
+    private readonly List<string> DISPLAY_TYPES = new(){"Windowed", "FullScreen"};
 
     // Start is called before the first frame update
     void Start()
     {
-        resolutions = Screen.resolutions;
+        Resolution[] resolutions = Screen.resolutions;
 
         resolutionDropdown.ClearOptions();
         displayDropdown.ClearOptions();
         qualityDropdown.ClearOptions();
 
-        List<string> resolutionList = new();
+        
         int curResIdx = 0;
 
-        for (int i = 0; i < resolutions.Length; i++)
+        foreach (Resolution r in Screen.resolutions)
         {
-            resolutionList.Add(resolutions[i].width + " x " + resolutions[i].height);
-            if (resolutions[i].width == Screen.currentResolution.width
-                && resolutions[i].height == Screen.currentResolution.height)
+            if ((float)r.width / r.height < 16f / 10)
             {
-                curResIdx = i;
+                continue;
+            }
+
+            string res = r.width + " x " + r.height;
+            if (resolutionList.Contains(res)) 
+            {
+                continue;
+            }
+
+            resolutionList.Add(res);
+
+            if (r.width == Screen.width
+                && r.height == Screen.height)
+            {
+                curResIdx = resolutionList.Count-1;
             }
         }
 
@@ -47,7 +61,7 @@ public class SettingsScript : MonoBehaviour
         resolutionDropdown.RefreshShownValue();
 
         displayDropdown.AddOptions(DISPLAY_TYPES);
-        displayDropdown.value = Screen.fullScreen ? 0 : 1;
+        displayDropdown.value = Screen.fullScreen ? 1 : 0;
         displayDropdown.RefreshShownValue();
 
         qualityDropdown.AddOptions(QualitySettings.names.ToList());
@@ -71,7 +85,6 @@ public class SettingsScript : MonoBehaviour
 
     public void SetVolume(float volume)
     {
-        Debug.Log(volume);
         audioMixer.SetFloat("Volume", Utils.VolumeToDecibel(volume));
         PlayerPrefs.SetFloat(Utils.VOLUME_KEY, volume);
     }
@@ -82,11 +95,14 @@ public class SettingsScript : MonoBehaviour
 
     public void SetDisplay(int idx)
     {
-        Screen.fullScreen = idx == 0 ? true : false;
+        Screen.fullScreen = idx == 1;
+        string[] arr = resolutionList[resolutionDropdown.value].Split("x");
+        Screen.SetResolution(int.Parse(arr[0]), int.Parse(arr[1]), idx == 1);
     }
 
     public void SetResolution(int idx)
     {
-        Screen.SetResolution(resolutions[idx].width, resolutions[idx].height, Screen.fullScreen);
+        string[] arr = resolutionList[idx].Split("x");
+        Screen.SetResolution(int.Parse(arr[0]), int.Parse(arr[1]), Screen.fullScreen);
     }
 }

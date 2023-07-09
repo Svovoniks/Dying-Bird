@@ -54,48 +54,35 @@ public class LogicMenuScript : MonoBehaviour
         OpenMain();
     }
 
-    private void OpenScreen(int num)
-    {
-        for (int i = 0; i < screenArray.Length; i++)
-        {
-            if (i == num)
-            {
-                continue;
-            }
-            screenArray[i].gameObject.SetActive(false);
-        }
-        screenArray[num].gameObject.SetActive(true);
-    }
-
     public void OpenMain()
     {
-        OpenScreen(MAIN_SCREEN_IDX);
+        Utils.OpenScreen(MAIN_SCREEN_IDX, screenArray);
     }
 
     public void OpenShopSelector()
     {
-        OpenScreen(SHOP_SELECTOR_SCREEN_IDX);
+        Utils.OpenScreen(SHOP_SELECTOR_SCREEN_IDX, screenArray);
     }
     public void OpenSettings()
     {
-        OpenScreen(SETTINGS_SCREEN_IDX);
+        Utils.OpenScreen(SETTINGS_SCREEN_IDX, screenArray);
     }
 
     public void OpenBirdShop()
     {
         ShopIDX = BIRD_SHOP_IDX;
-        OpenScreen(ITEM_SELECTOR_SCREEN_IDX);
+        Utils.OpenScreen(ITEM_SELECTOR_SCREEN_IDX, screenArray);
     }
 
     public void OpenPipeShop()
     {
         ShopIDX = PIPE_SHOP_IDX;
-        OpenScreen(ITEM_SELECTOR_SCREEN_IDX);
+        Utils.OpenScreen(ITEM_SELECTOR_SCREEN_IDX, screenArray);
     }
     public void OpenMissileShop()
     {
         ShopIDX = MISSILE_SHOP_IDX;
-        OpenScreen(ITEM_SELECTOR_SCREEN_IDX);
+        Utils.OpenScreen(ITEM_SELECTOR_SCREEN_IDX, screenArray);
     }
 
     public void StartTheGame()

@@ -1233,7 +1233,19 @@ MonoBehaviour:
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1615773116}
+        m_TargetAssemblyTypeName: SettingsScript, Assembly-CSharp
+        m_MethodName: SetDisplay
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!114 &368635250
 MonoBehaviour:
@@ -2096,6 +2108,34 @@ PrefabInstance:
     - target: {fileID: 887183253410318426, guid: d032d1dc273b52949ab51232e73be8ed, type: 3}
       propertyPath: m_Options.m_Options.Array.data[1].m_Text
       value: Option C
+      objectReference: {fileID: 0}
+    - target: {fileID: 887183253410318426, guid: d032d1dc273b52949ab51232e73be8ed, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 887183253410318426, guid: d032d1dc273b52949ab51232e73be8ed, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 887183253410318426, guid: d032d1dc273b52949ab51232e73be8ed, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1615773116}
+    - target: {fileID: 887183253410318426, guid: d032d1dc273b52949ab51232e73be8ed, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 887183253410318426, guid: d032d1dc273b52949ab51232e73be8ed, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetResolution
+      objectReference: {fileID: 0}
+    - target: {fileID: 887183253410318426, guid: d032d1dc273b52949ab51232e73be8ed, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SettingsScript, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 887183253410318426, guid: d032d1dc273b52949ab51232e73be8ed, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 1038727748411455437, guid: d032d1dc273b52949ab51232e73be8ed, type: 3}
       propertyPath: m_AnchorMax.y
