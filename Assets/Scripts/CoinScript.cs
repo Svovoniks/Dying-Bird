@@ -40,7 +40,7 @@ public class CoinScript : MonoBehaviour
             return;
         }
         Vector3 moveVector = bird.transform.position - transform.position;
-        transform.position += moveVector.normalized * coinSpeed * Time.deltaTime;
+        transform.position += coinSpeed * Time.deltaTime * moveVector.normalized;
     }
 
     private void GoHome() 

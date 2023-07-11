@@ -1,9 +1,11 @@
+using System;
 using Unity.Mathematics;
 using UnityEngine;
 
 public class BirdScript : MonoBehaviour, IDamagable
 {
     public static bool isAlive;
+    public event EventHandler JustDied;
 
     [SerializeField] private Rigidbody2D body;
     [SerializeField] private float jump = 1;
@@ -52,6 +54,7 @@ public class BirdScript : MonoBehaviour, IDamagable
         spriteName = Utils.GetPlayerPref(Utils.BIRD_KEY, Utils.DEFAULT_BIRD);
 
         Health = float.Parse(DataBase.GetData()[spriteName].info);
+        HealthLeft = Health;
 
         LoadFrames(spriteName);
 
@@ -64,6 +67,7 @@ public class BirdScript : MonoBehaviour, IDamagable
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log(JustDied.GetInvocationList().Length);
         if (Input.GetKeyDown(KeyCode.Space) && isAlive)
         {
             body.velocity = Vector2.up * jump;
@@ -177,7 +181,7 @@ public class BirdScript : MonoBehaviour, IDamagable
             deathSource.Play();
         }
         isAlive = false;
-        logicScript.GameOver();
+        OnDeath();
     }
 
     private void Fire()
@@ -191,9 +195,13 @@ public class BirdScript : MonoBehaviour, IDamagable
                 transform.position.y - birdRenderer.size.y,
                 transform.position.z
                 );
-            Instantiate(missile, missilePosition, new Quaternion());
+            MissileScript missileScript = 
+                Instantiate(missile, missilePosition, new Quaternion()).GetComponent<MissileScript>();
+            JustDied += missileScript.OnHostDeath;
+            missileScript.GotDestroyed += UnsubscribeMissile;
         }
     }
+
 
     public void GoHome() 
     {
@@ -204,11 +212,21 @@ public class BirdScript : MonoBehaviour, IDamagable
     public void TakeDamage(float damage) 
     {
         HealthLeft -= damage;
-        if (Health <= 0) 
+        logicScript.GameOverlay.SetBirdHeath(math.clamp(HealthLeft / Health, 0, 1));
+        if (HealthLeft <= 0) 
         {
             explosion.Play();
             Die();
         }
-        logicScript.GameOverlay.SetBirdHeath(Health / HealthLeft);
+    }
+
+    private void OnDeath() 
+    {
+        JustDied?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void UnsubscribeMissile(object sender, EventArgs e)
+    {
+        JustDied -= (sender as MissileScript).OnHostDeath;
     }
 }

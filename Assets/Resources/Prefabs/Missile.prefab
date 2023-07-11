@@ -5058,6 +5058,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 1
   destroyAfter: 5
+  evil: 0
+  damagePerHit: 1
   engine: {fileID: 3058889538090553107}
   explosion: {fileID: 5450277464214295092}
   explosionSource: {fileID: 8460687493185617007}
@@ -5133,7 +5135,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 24300002, guid: 1f5dde72a997eeb4eb34d20b00f3a51f, type: 2}
   m_audioClip: {fileID: 8300000, guid: 9006e88acbcf18e4aafd3537f16aed12, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -5261,7 +5263,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 24300002, guid: 1f5dde72a997eeb4eb34d20b00f3a51f, type: 2}
   m_audioClip: {fileID: 8300000, guid: b25956f02f012d345bbbf8de48975603, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -5366,8 +5368,16 @@ PrefabInstance:
       value: -0.07
       objectReference: {fileID: 0}
     - target: {fileID: 1257433142158798830, guid: 5b42e21bfc2a96d4db45898dff5db306, type: 3}
+      propertyPath: ShapeModule.m_Scale.z
+      value: -0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1257433142158798830, guid: 5b42e21bfc2a96d4db45898dff5db306, type: 3}
       propertyPath: ShapeModule.m_Position.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1257433142158798830, guid: 5b42e21bfc2a96d4db45898dff5db306, type: 3}
+      propertyPath: ShapeModule.m_Position.z
+      value: -0.08
       objectReference: {fileID: 0}
     - target: {fileID: 1257433142158798830, guid: 5b42e21bfc2a96d4db45898dff5db306, type: 3}
       propertyPath: ShapeModule.radiusThickness
@@ -5387,7 +5397,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7799935520555336675, guid: 5b42e21bfc2a96d4db45898dff5db306, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.06
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7799935520555336675, guid: 5b42e21bfc2a96d4db45898dff5db306, type: 3}
       propertyPath: m_LocalPosition.y

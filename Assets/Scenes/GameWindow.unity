@@ -358,7 +358,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &156334361
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3793,7 +3793,7 @@ MonoBehaviour:
   interval: 1.5
   pipeOffset: 0.95
   speed: 1
-  bossInterval: 1
+  bossInterval: 50
 --- !u!224 &1304773355
 RectTransform:
   m_ObjectHideFlags: 0

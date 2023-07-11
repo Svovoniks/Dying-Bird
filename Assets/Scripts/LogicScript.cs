@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Xml.Serialization;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -136,6 +137,8 @@ public class LogicScript : MonoBehaviour
         pipeSpawner = FindObjectOfType<PipeSpawnerScript>();
         bird = FindObjectOfType<BirdScript>();
 
+        bird.JustDied += OnBirdDeath;
+
         Money = PlayerPrefs.GetInt(Utils.MONEY_KEY);
 
         missileTimer = missileTimeout;
@@ -243,6 +246,12 @@ public class LogicScript : MonoBehaviour
         preparingForBoss = false;
         waitingForBird = true;
     }
+    public void ExitBoss() 
+    {
+        Utils.OpenScreen(GAME_OVERLAY_SCREEN_IDX, screenArray);
+        GameOverlay = gameOverlayScript;
+        pipeSpawner.Activate();
+    }
 
     public void GameOver()
     {
@@ -283,5 +292,10 @@ public class LogicScript : MonoBehaviour
     public void OpenMenu()
     {
         SceneManager.LoadScene(0);
+    }
+
+    private void OnBirdDeath(object sender, EventArgs e) 
+    {
+        GameOver();
     }
 }

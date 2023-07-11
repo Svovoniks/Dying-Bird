@@ -1,7 +1,11 @@
+using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class MissileScript : MonoBehaviour
 {
+    public event EventHandler GotDestroyed;
+
     [SerializeField] private float speed = 1f;
     [SerializeField] private float destroyAfter;
     [SerializeField] private bool evil = false;
@@ -13,17 +17,23 @@ public class MissileScript : MonoBehaviour
 
 
     private int hitsLeft;
+    private bool blownUp;
 
     // Start is called before the first frame update
     void Start()
     {
-        if (!evil) 
+        blownUp = false;
+        if (!evil)
         {
             string spriteName = Utils.GetSpriteName(Utils.MISSILE_KEY, Utils.DEFAULT_MISSILE);
             transform.GetComponent<SpriteRenderer>().sprite =
                 Resources.Load<Sprite>(Utils.MISSILE_PATH + spriteName);
 
             hitsLeft = int.Parse(DataBase.GetData()[spriteName].info);
+        }
+        else 
+        {
+            hitsLeft = 1;
         }
         
 
@@ -35,21 +45,15 @@ public class MissileScript : MonoBehaviour
     {
         transform.position += speed * Time.deltaTime * Vector3.right;
 
-        if (transform.position.x > destroyAfter)
+        if (math.abs(transform.position.x) > destroyAfter)
         {
-            if (hitsLeft > 0)
-            {
-                hitsLeft = 0;
-                missileSource.Pause();
-                explosionSource.Play();
-            }
-
-            Destroy(gameObject, explosionSource.clip.length);
+            BlowUp();
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        
         if (collision.gameObject.layer == 7 && hitsLeft > 0)
         {
             hitsLeft--;
@@ -70,7 +74,7 @@ public class MissileScript : MonoBehaviour
         }
         else if (collision.gameObject.layer == 3 && evil || collision.gameObject.layer == 10 && !evil) 
         {
-            collision.gameObject.GetComponentInParent<IDamagable>().TakeDamage(hitsLeft * damagePerHit);
+            collision.gameObject.GetComponent<IDamagable>().TakeDamage(hitsLeft * damagePerHit);
 
             BlowUp();
             speed = 0;
@@ -82,22 +86,45 @@ public class MissileScript : MonoBehaviour
         }
         if (hitsLeft == 0)
         {
-            transform.GetComponent<SpriteRenderer>().enabled = false;
-            transform.GetComponent<Collider2D>().enabled = false;
-            engine.SetActive(false);
-            missileSource.Pause();
-            Destroy(gameObject, explosionSource.clip.length);
-
+            BlowUp(false);
         }
     }
 
-    private void BlowUp() 
+    private void BlowUp(bool fire = true) 
     {
+        if (blownUp) 
+        {
+            return;
+        }
+        
+
         hitsLeft = 0;
+        blownUp = true;
 
-        explosionSource.Play();
-        explosion.Play();
+        if (fire)
+        {
+            explosionSource.Play();
+            explosion.Play();
+        }
+        
+        missileSource.Pause();
 
-        Destroy(gameObject, explosion.main.duration);
+        transform.GetComponent<SpriteRenderer>().enabled = false;
+        transform.GetComponent<Collider2D>().enabled = false;
+        engine.SetActive(false);
+
+        OnDestruction();
+        
+        Destroy(gameObject, explosionSource.clip.length);
+    }
+
+    public void OnHostDeath(object sender, EventArgs e) 
+    {
+        BlowUp();
+    }
+
+    private void OnDestruction()
+    {
+        GotDestroyed?.Invoke(this, EventArgs.Empty);
     }
 }

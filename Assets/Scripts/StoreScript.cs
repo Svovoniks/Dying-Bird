@@ -16,9 +16,11 @@ public class StoreScript : MonoBehaviour
     [SerializeField] private Image itemImage;
     [SerializeField] private Image checkmark;
     [SerializeField] private GameObject moneyView;
+    [SerializeField] private GameObject descriptionView;
     [SerializeField] private TextMeshProUGUI priceTag;
     [SerializeField] private TextMeshProUGUI selectButtonText;
     [SerializeField] private TextMeshProUGUI itemName;
+    [SerializeField] private TextMeshProUGUI descriptionText;
 
     private int currentIdx;
     private string defaultName;
@@ -167,5 +169,15 @@ public class StoreScript : MonoBehaviour
             DataBase.StoreData(storeItems);
         }
         selectButton.interactable = false;
+    }
+
+    public void ShowDescription() 
+    {
+        descriptionView.SetActive(true);
+    }
+
+    public void HideDescription() 
+    {
+        descriptionView.SetActive(false);
     }
 }

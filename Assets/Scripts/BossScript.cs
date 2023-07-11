@@ -7,11 +7,15 @@ using UnityEngine.UI;
 
 public class BossScript : MonoBehaviour, IDamagable
 {
+
+    public event EventHandler JustDied;
+
     [SerializeField] private float missileTimeout;
-    [SerializeField] private int HP;
+    [SerializeField] private float HP;
     [SerializeField] private float screenOffset;
     [SerializeField] private float arrivalSpeed;
     [SerializeField] private GameObject missile;
+    [SerializeField] private GameObject mainBody;
     [SerializeField] private Transform missileSpawnPosition;
     [SerializeField] private ParticleSystem explosion;
 
@@ -20,6 +24,7 @@ public class BossScript : MonoBehaviour, IDamagable
     private float healthLeft;
     private float startingPosition;
     private LogicScript logicScript;
+    private BirdScript bird;
     private float lastMissile;
 
     
@@ -28,9 +33,12 @@ public class BossScript : MonoBehaviour, IDamagable
     {
         isAlive = true;
         arrived = false;
-        startingPosition = transform.position.x;
+        healthLeft = HP;
+        startingPosition = mainBody.transform.position.x;
         logicScript = GameObject.FindGameObjectWithTag("Logic").
             GetComponent<LogicScript>();
+        logicScript.GameOverlay.SetBossHealth(1);
+        bird = FindObjectOfType<BirdScript>();
     }
 
     // Update is called once per frame
@@ -42,13 +50,12 @@ public class BossScript : MonoBehaviour, IDamagable
         }
         if (!arrived) 
         {
-            transform.position += arrivalSpeed * Time.deltaTime * Vector3.left;
-            if (math.abs(transform.position.x - startingPosition) >= screenOffset) 
+            mainBody.transform.position += arrivalSpeed * Time.deltaTime * Vector3.left;
+            if (math.abs(mainBody.transform.position.x - startingPosition) >= screenOffset) 
             {
                 arrived = true;
                 lastMissile = Time.time;
             }
-            Debug.Log(transform.position);
             return;
         }
 
@@ -64,21 +71,41 @@ public class BossScript : MonoBehaviour, IDamagable
     {
         if (isAlive) 
         {
-            Instantiate(missile, missileSpawnPosition.position, new Quaternion());
+            MissileScript missileScript = 
+                Instantiate(missile, missileSpawnPosition.position, new Quaternion()).GetComponent<MissileScript>();
+
+            JustDied += missileScript.OnHostDeath;
+            missileScript.GotDestroyed += UnsubscribeMissile;
+
+            bird.JustDied += missileScript.OnHostDeath;
+            missileScript.GotDestroyed += bird.UnsubscribeMissile;
         }
     }
 
     public void TakeDamage(float damage)
     {
         healthLeft -= damage;
-        logicScript.GameOverlay.SetBossHealth(healthLeft);
+        logicScript.GameOverlay.SetBossHealth(math.clamp(healthLeft / HP, 0, 1));
         if (healthLeft <= 0) 
         {
             explosion.Play();
-            Destroy(gameObject, explosion.main.duration);
+            GetComponent<SpriteRenderer>().enabled = false;
+            Destroy(mainBody, explosion.main.duration);
             isAlive = false;
-        }
+            OnDeath();
+            logicScript.ExitBoss();
 
+        }
+    }
+
+    private void OnDeath()
+    {
+        JustDied?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void UnsubscribeMissile(object sender, EventArgs e)
+    {
+        JustDied -= (sender as MissileScript).OnHostDeath;
     }
 
 }
