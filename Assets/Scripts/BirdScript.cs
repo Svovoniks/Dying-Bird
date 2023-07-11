@@ -1,7 +1,7 @@
 using Unity.Mathematics;
 using UnityEngine;
 
-public class BirdScript : MonoBehaviour
+public class BirdScript : MonoBehaviour, IDamagable
 {
     public static bool isAlive;
 
@@ -9,15 +9,13 @@ public class BirdScript : MonoBehaviour
     [SerializeField] private float jump = 1;
     [SerializeField] private float burnedTime = 1;
     [SerializeField] private float frameRate = 12f;
+    [SerializeField] private float homingSpeed = 1;
     [SerializeField] private AudioSource flapSource;
     [SerializeField] private AudioSource deathSource;
     [SerializeField] private AudioSource hitSource;
     [SerializeField] private AudioSource lostSource;
-    [SerializeField] private AudioClip flapClip;
-    [SerializeField] private AudioClip deathClip;
-    [SerializeField] private AudioClip hitClip;
-    [SerializeField] private AudioClip lostClip;
     [SerializeField] private GameObject missile;
+    [SerializeField] private ParticleSystem explosion;
 
     private SpriteRenderer birdRenderer;
     private string spriteName;
@@ -28,12 +26,32 @@ public class BirdScript : MonoBehaviour
     private float lastBurn;
     private bool burning;
     private bool magnetized;
+    private bool comingHome;
+    private float startPosition;
+    private float homeDistance;
+
+
+    public float Health { get; private set; }
+    public float HealthLeft { get; private set; }
+    public bool BossReady { get; private set; }
+
 
 
     // Start is called before the first frame update
     void Start()
     {
-        spriteName = Utils.GetSpriteName(Utils.BIRD_KEY, Utils.DEFAULT_BIRD);
+        burning = false;
+        magnetized = false;
+        comingHome = false;
+        BossReady = false;
+        homeDistance = 0;
+
+
+        startPosition = transform.position.x;
+
+        spriteName = Utils.GetPlayerPref(Utils.BIRD_KEY, Utils.DEFAULT_BIRD);
+
+        Health = float.Parse(DataBase.GetData()[spriteName].info);
 
         LoadFrames(spriteName);
 
@@ -51,11 +69,14 @@ public class BirdScript : MonoBehaviour
             body.velocity = Vector2.up * jump;
             flapSource.Play();
         }
+
         if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             Fire();
         }
+
         Vector3 cornerCoord = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
+
         if ((math.abs(transform.position.x) > cornerCoord.x
             || math.abs(transform.position.y) > cornerCoord.y) && isAlive)
         {
@@ -63,6 +84,22 @@ public class BirdScript : MonoBehaviour
 
             Die();
             return;
+        }
+
+        if (comingHome && isAlive) 
+        {
+            homeDistance = math.abs(transform.position.x - startPosition);
+            transform.position += homingSpeed *
+                (startPosition - transform.position.x > 0 ? 1 : -1) *
+                Time.deltaTime *
+                Vector3.right;
+
+            if (homeDistance < math.abs(transform.position.x - startPosition))
+            {
+                transform.position = new Vector3(startPosition, transform.position.y, transform.position.z);
+                BossReady = true;
+                comingHome = false;
+            }
         }
 
         timer += Time.deltaTime;
@@ -156,5 +193,22 @@ public class BirdScript : MonoBehaviour
                 );
             Instantiate(missile, missilePosition, new Quaternion());
         }
+    }
+
+    public void GoHome() 
+    {
+        BossReady = false;
+        comingHome = true;
+    }
+
+    public void TakeDamage(float damage) 
+    {
+        HealthLeft -= damage;
+        if (Health <= 0) 
+        {
+            explosion.Play();
+            Die();
+        }
+        logicScript.GameOverlay.SetBirdHeath(Health / HealthLeft);
     }
 }

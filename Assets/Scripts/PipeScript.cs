@@ -18,11 +18,11 @@ public class PipeScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (UnityEngine.Random.Range(0f, 100f) > moveProbability)
+        if (!Utils.CheckProbability(moveProbability))
         {
             moveSpeed = 0;
         }
-        if (UnityEngine.Random.Range(0f, 100f) <= indestructProbability)
+        if (Utils.CheckProbability(indestructProbability))
         {
             topShield.SetActive(true);
             bottomShield.SetActive(true);
@@ -33,7 +33,7 @@ public class PipeScript : MonoBehaviour
 
         spritePath = Utils.PIPES_PATH + Utils.GetSpriteName(Utils.PIPE_KEY, Utils.DEFAULT_PIPE);
 
-        pipeSpawnerScript = FindFirstObjectByType<PipeSpawnerScript>();
+        pipeSpawnerScript = FindObjectOfType<PipeSpawnerScript>();
 
         destroyAfter = -pipeSpawnerScript.transform.position.x;
 

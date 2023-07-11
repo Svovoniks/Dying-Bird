@@ -4,6 +4,8 @@ public class MissileScript : MonoBehaviour
 {
     [SerializeField] private float speed = 1f;
     [SerializeField] private float destroyAfter;
+    [SerializeField] private bool evil = false;
+    [SerializeField] private float damagePerHit = 1;
     [SerializeField] private GameObject engine;
     [SerializeField] private ParticleSystem explosion;
     [SerializeField] private AudioSource explosionSource;
@@ -15,11 +17,15 @@ public class MissileScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        string spriteName = Utils.GetSpriteName(Utils.MISSILE_KEY, Utils.DEFAULT_MISSILE);
-        transform.GetComponent<SpriteRenderer>().sprite =
-            Resources.Load<Sprite>(Utils.MISSILE_PATH + spriteName);
+        if (!evil) 
+        {
+            string spriteName = Utils.GetSpriteName(Utils.MISSILE_KEY, Utils.DEFAULT_MISSILE);
+            transform.GetComponent<SpriteRenderer>().sprite =
+                Resources.Load<Sprite>(Utils.MISSILE_PATH + spriteName);
 
-        hitsLeft = int.Parse(DataBase.GetData()[spriteName].info);
+            hitsLeft = int.Parse(DataBase.GetData()[spriteName].info);
+        }
+        
 
         missileSource.Play();
     }
@@ -27,14 +33,14 @@ public class MissileScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position += Vector3.right * speed * Time.deltaTime;
+        transform.position += speed * Time.deltaTime * Vector3.right;
 
         if (transform.position.x > destroyAfter)
         {
-            if (hitsLeft > 0 && Utils.GetBool(Utils.SOUND_KEY))
+            if (hitsLeft > 0)
             {
                 hitsLeft = 0;
-                missileSource.Play();
+                missileSource.Pause();
                 explosionSource.Play();
             }
 
@@ -57,16 +63,22 @@ public class MissileScript : MonoBehaviour
         }
         else if (collision.gameObject.layer == 8 && hitsLeft > 0)
         {
-            hitsLeft = 0;
+            BlowUp();
 
-
-            explosionSource.Play();
-
-            explosion.Play();
-
-            Destroy(gameObject, explosion.main.duration);
             PipeSpawnerScript pipeSpawnerScript = FindFirstObjectByType<PipeSpawnerScript>();
             speed = -pipeSpawnerScript.CurrentSpeed;
+        }
+        else if (collision.gameObject.layer == 3 && evil || collision.gameObject.layer == 10 && !evil) 
+        {
+            collision.gameObject.GetComponentInParent<IDamagable>().TakeDamage(hitsLeft * damagePerHit);
+
+            BlowUp();
+            speed = 0;
+        }
+        else if(collision.gameObject.layer == 6 && hitsLeft > 0) 
+        {
+            BlowUp();
+            speed = 0;
         }
         if (hitsLeft == 0)
         {
@@ -74,7 +86,18 @@ public class MissileScript : MonoBehaviour
             transform.GetComponent<Collider2D>().enabled = false;
             engine.SetActive(false);
             missileSource.Pause();
+            Destroy(gameObject, explosionSource.clip.length);
 
         }
+    }
+
+    private void BlowUp() 
+    {
+        hitsLeft = 0;
+
+        explosionSource.Play();
+        explosion.Play();
+
+        Destroy(gameObject, explosion.main.duration);
     }
 }

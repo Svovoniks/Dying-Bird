@@ -174,9 +174,9 @@ public struct Item
 public class DataBase
 {
     private const string ASSESTS_PATH = "db";
-    private const string DATABASE_PATH = "flappy bird_data/Resources/Database.db";
+    //private const string DATABASE_PATH = "flappy bird_data/Resources/Database.db";
 
-    //private const string DATABASE_PATH = "db";// For Unity Editor
+    private const string DATABASE_PATH = "db";// For Unity Editor
     private static void InitiateData()
     {
         File.WriteAllText(DATABASE_PATH, Resources.Load<TextAsset>(ASSESTS_PATH).text);
@@ -235,4 +235,9 @@ public class DataBase
 
         File.WriteAllText(DATABASE_PATH, lines);
     }
+}
+
+interface IDamagable
+{
+    public void TakeDamage(float damage);
 }

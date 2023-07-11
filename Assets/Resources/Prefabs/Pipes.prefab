@@ -590,7 +590,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coinSource: {fileID: 5682762186551252245}
-  coinSpeed: 80
+  coinSpeed: 2
 --- !u!1 &6423565004277181127
 GameObject:
   m_ObjectHideFlags: 0
