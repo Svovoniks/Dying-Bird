@@ -34,7 +34,7 @@ public class StoreScript : MonoBehaviour
     { 
         logicMainScript = FindObjectOfType<LogicMenuScript>();
 
-        storeItems = DataBase.GetData();
+        storeItems = NewDataBase.GetData();
 
         Utils.SetNumber(Utils.GetPlayerPref(Utils.MONEY_KEY, 0),
             moneyView, false);
@@ -114,7 +114,7 @@ public class StoreScript : MonoBehaviour
         itemImage.sprite = itemImageArray[idx];
 
         Item item = storeItems[itemImageArray[idx].name];
-        bool SBInteractable = true;
+        bool SBInteractable;
         if (item.bought)
         {
             selectButtonText.text = "Select";
@@ -143,6 +143,7 @@ public class StoreScript : MonoBehaviour
         }
         selectButton.interactable = SBInteractable;
         itemName.text = item.prettyName;
+        descriptionText.text = item.description;
     }
 
     public void SeletItem()
@@ -153,6 +154,7 @@ public class StoreScript : MonoBehaviour
         {
             PlayerPrefs.SetString(select_key, item.name);
             checkmark.gameObject.SetActive(true);
+            selectButton.interactable = false;
         }
         else
         {
@@ -166,9 +168,9 @@ public class StoreScript : MonoBehaviour
             selectButtonText.text = "Select";
             item.bought = true;
             storeItems[itemImageArray[currentIdx].name] = item;
-            DataBase.StoreData(storeItems);
+            NewDataBase.BuyItem(item);
         }
-        selectButton.interactable = false;
+        
     }
 
     public void ShowDescription() 

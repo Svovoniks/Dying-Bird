@@ -5059,7 +5059,7 @@ MonoBehaviour:
   speed: -1
   destroyAfter: 5
   evil: 1
-  damagePerHit: 1
+  damagePerHit: 0.5
   engine: {fileID: 3058889538090553107}
   explosion: {fileID: 5450277464214295092}
   explosionSource: {fileID: 8460687493185617007}

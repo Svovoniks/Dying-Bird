@@ -1,9 +1,0 @@
-id,name,price,bought,pretty_name,info
-1,bird0,0,1,Blue Bird,1
-2,bird1,50,0,Red Bird,2
-3,bird2,100,0,Golden Bird,3
-4,pipe-green,0,1,Green Pipes,0
-5,pipe-red,100,0,Red Pipes,0
-6,grey-missile,0,1,Grey Missile,1
-7,green-missile,200,0,Green Missile,2
-8,golden-missile,300,0,Golden Missile,3

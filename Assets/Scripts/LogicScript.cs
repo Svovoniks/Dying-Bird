@@ -17,9 +17,11 @@ public class LogicScript : MonoBehaviour
     [SerializeField] private GameObject bossGameOverlayScreen;
     [SerializeField] private GameObject bestScoreNotifier;
     [SerializeField] private GameObject boss;
+    [SerializeField] private GameObject coinCloud;
     [SerializeField] private GameOverlay gameOverlayScript;
     [SerializeField] private GameOverlay bossOverlayScript;
     [SerializeField] private Transform bossPosition;
+    [SerializeField] private Transform coinCloudPosition;
     [SerializeField] private float missileTimeout;
     [SerializeField] private float magnetTime;
     [SerializeField][Range(0, 9)] private int magnetLimit;
@@ -28,6 +30,7 @@ public class LogicScript : MonoBehaviour
     private bool initialWait;
     private bool preparingForBoss;
     private bool waitingForBird;
+    private bool bossTime;
 
     private float missileTimer;
     private float lastMagnetTime;
@@ -120,6 +123,11 @@ public class LogicScript : MonoBehaviour
 
         UsingMagnet = false;
 
+        preparingForBoss = false;
+        waitingForBird = false;
+        bossTime = false;
+
+
         lastMagnetTime = -magnetTime;
 
         Score = 0;
@@ -151,7 +159,7 @@ public class LogicScript : MonoBehaviour
             RealStart();
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse2))
+        if (Input.GetKeyDown(KeyCode.Mouse2) && !bossTime)
         {
             UseMagnet();
         }
@@ -229,6 +237,7 @@ public class LogicScript : MonoBehaviour
             Utils.OpenScreen(BOSS_GAME_OVERLAY_SCREEN_IDX, screenArray);
             Instantiate(boss, bossPosition.position, new Quaternion());
             GameOverlay = bossOverlayScript;
+            bossTime = true;
 
             waitingForBird = false;
         }
@@ -250,7 +259,12 @@ public class LogicScript : MonoBehaviour
     {
         Utils.OpenScreen(GAME_OVERLAY_SCREEN_IDX, screenArray);
         GameOverlay = gameOverlayScript;
-        pipeSpawner.Activate();
+        bossTime = false;
+
+        CoinCloudScript cloud = Instantiate(coinCloud, coinCloudPosition.position,
+            new Quaternion()).GetComponent<CoinCloudScript>();
+
+        cloud.InTheMiddle += (a, b) => pipeSpawner.Activate();
     }
 
     public void GameOver()

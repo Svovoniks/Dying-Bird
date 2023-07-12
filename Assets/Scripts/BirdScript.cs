@@ -53,7 +53,7 @@ public class BirdScript : MonoBehaviour, IDamagable
 
         spriteName = Utils.GetPlayerPref(Utils.BIRD_KEY, Utils.DEFAULT_BIRD);
 
-        Health = float.Parse(DataBase.GetData()[spriteName].info);
+        Health = float.Parse(NewDataBase.GetData()[spriteName].info);
         HealthLeft = Health;
 
         LoadFrames(spriteName);

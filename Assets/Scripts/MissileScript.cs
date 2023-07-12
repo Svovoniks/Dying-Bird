@@ -28,8 +28,8 @@ public class MissileScript : MonoBehaviour
             string spriteName = Utils.GetSpriteName(Utils.MISSILE_KEY, Utils.DEFAULT_MISSILE);
             transform.GetComponent<SpriteRenderer>().sprite =
                 Resources.Load<Sprite>(Utils.MISSILE_PATH + spriteName);
-
-            hitsLeft = int.Parse(DataBase.GetData()[spriteName].info);
+            
+            hitsLeft = int.Parse(NewDataBase.GetData()[spriteName].info);
         }
         else 
         {

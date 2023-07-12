@@ -265,6 +265,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 14854457}
   m_CullTransparentMesh: 1
+--- !u!1 &15559393
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 15559394}
+  m_Layer: 0
+  m_Name: CoinCloudPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &15559394
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15559393}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 341553571}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 947, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &112663629
 GameObject:
   m_ObjectHideFlags: 0
@@ -358,7 +394,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &156334361
 RectTransform:
   m_ObjectHideFlags: 0
@@ -858,6 +894,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1304773355}
+  - {fileID: 15559394}
   - {fileID: 903444295}
   - {fileID: 605626478}
   m_Father: {fileID: 0}
@@ -3793,7 +3830,7 @@ MonoBehaviour:
   interval: 1.5
   pipeOffset: 0.95
   speed: 1
-  bossInterval: 50
+  bossInterval: 10
 --- !u!224 &1304773355
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4833,7 +4870,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1257433142158798830, guid: 5b42e21bfc2a96d4db45898dff5db306, type: 3}
       propertyPath: ShapeModule.radiusThickness
-      value: 1.0000
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1257433142158798830, guid: 5b42e21bfc2a96d4db45898dff5db306, type: 3}
       propertyPath: ShapeModule.m_SpriteRenderer
@@ -5663,9 +5700,11 @@ MonoBehaviour:
   bossGameOverlayScreen: {fileID: 1372943705}
   bestScoreNotifier: {fileID: 917144331}
   boss: {fileID: 4761048179185269132, guid: 5cd30c6be89a53645a49f7a05bd6b412, type: 3}
+  coinCloud: {fileID: 9201363652784379718, guid: 7d62ad8e359be724aa898b50fd9a839c, type: 3}
   gameOverlayScript: {fileID: 1463777191}
   bossOverlayScript: {fileID: 1372943710}
   bossPosition: {fileID: 605626478}
+  coinCloudPosition: {fileID: 15559394}
   missileTimeout: 10
   magnetTime: 10
   magnetLimit: 5

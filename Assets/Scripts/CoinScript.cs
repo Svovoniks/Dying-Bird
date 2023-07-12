@@ -1,4 +1,5 @@
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CoinScript : MonoBehaviour
@@ -55,7 +56,8 @@ public class CoinScript : MonoBehaviour
         {
             logicScript.Money += 1;
             coinSource.Play();
-            transform.gameObject.SetActive(false);
+            transform.GetComponent<SpriteRenderer>().enabled = false;
+            transform.GetComponent<Collider2D>().enabled = false;
         }
     }
 }

@@ -1,11 +1,11 @@
+using Mono.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
-using Unity.Burst;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Assertions.Comparers;
 using UnityEngine.UI;
 
 public class Utils
@@ -156,7 +156,8 @@ public struct Item
     public bool bought;
     public string prettyName;
     public string info;
-    public Item(int id, string name, int price, int bought, string prettyName, string info)
+    public string description;
+    public Item(int id, string name, int price, int bought, string prettyName, string info, string description)
     {
         this.id = id;
         this.name = name;
@@ -164,6 +165,12 @@ public struct Item
         this.bought = bought == 1 ? true : false;
         this.prettyName = prettyName;
         this.info = info;
+        this.description = description;
+    }
+
+    public void UpdateValue() 
+    {
+        id = 0;
     }
 
     public override readonly string ToString()
@@ -171,70 +178,150 @@ public struct Item
         return id + "," + name + "," + price + "," + (bought ? 1 : 0) + "," + prettyName + "," + info + "\n";
     }
 }
-public class DataBase
+
+public class NewDataBase 
 {
-    private const string ASSESTS_PATH = "db";
-    private const string DATABASE_PATH = "flappy bird_data/Resources/Database.db";
+    private const string DATABASE_NAME = "DataBase.db";
+    private static NewDataBase instance;
+    private Dictionary<string, Item> data;
 
-    //private const string DATABASE_PATH = "db";// For Unity Editor
-    private static void InitiateData()
+    private NewDataBase() 
     {
-        File.WriteAllText(DATABASE_PATH, Resources.Load<TextAsset>(ASSESTS_PATH).text);
-        Dictionary<string, Item> data = GetData();
-
-        string[] arr =
+        if (!File.Exists(Path.Combine(Application.persistentDataPath, DATABASE_NAME)))
         {
-            Utils.GetSpriteName(Utils.BIRD_KEY, Utils.DEFAULT_BIRD),
-            Utils.GetSpriteName(Utils.PIPE_KEY, Utils.DEFAULT_PIPE),
-            Utils.GetSpriteName(Utils.MISSILE_KEY, Utils.DEFAULT_MISSILE)
-        };
-
-        foreach (string i in arr)
-        {
-            data[i] = new Item(data[i].id, data[i].name, data[i].price, 1, data[i].prettyName, data[i].info);
+            InitiateDataBase();
         }
-        StoreData(data);
+
+        CheckDataBase();
+
+        data = ReadData(Path.Combine(Application.persistentDataPath, DATABASE_NAME));
     }
+
+    private static Dictionary<string, Item> ReadData(string path)
+    {
+        Dictionary<string, Item> newData = new();
+
+        string query = "SELECT id, name, price, bought, pretty_name, info, description FROM main;";
+
+        using SqliteConnection connection = new("Data Source=" + path);
+        connection.Open();
+
+        SqliteCommand command = new(query, connection);
+
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            Item item = new(
+                reader.GetInt32(0),
+                reader.GetString(1),
+                reader.GetInt32(2),
+                reader.GetInt32(3),
+                reader.GetString(4),
+                reader.GetString(5),
+                reader.GetString(6)
+                );
+            newData.Add(item.name, item);
+        }
+
+        return newData;
+    }
+
+    private static void CheckDataBase() 
+    {
+        string versionQuery = "PRAGMA user_version;";
+
+        using SqliteConnection connection1 = new("Data Source=" +
+            Path.Combine(Application.persistentDataPath, DATABASE_NAME));
+
+        using SqliteConnection connection2 = new("Data Source=" +
+        Path.Combine(Application.streamingAssetsPath, DATABASE_NAME));
+
+        connection1.Open();
+        connection2.Open();
+
+        SqliteCommand command1 = new(versionQuery, connection1);
+        SqliteCommand command2 = new(versionQuery, connection2);
+
+        using SqliteDataReader reader1 = command1.ExecuteReader();
+        using SqliteDataReader reader2 = command2.ExecuteReader();
+
+        reader1.Read();
+
+        int v_1 = reader1.GetInt32(0);
+
+        reader2.Read();
+
+        int v_2 = reader2.GetInt32(0);
+
+        if (v_1 != v_2)
+        {
+            connection1.Close();
+            UpdateDataBase();
+            Debug.Log("Updated database");
+        }
+    }
+
+    private static void UpdateDataBase()
+    {
+        List<int> boughtItems = new();
+
+        using (SqliteConnection connection = new("Data Source=" +
+            Path.Combine(Application.persistentDataPath, DATABASE_NAME))) 
+        {
+            connection.Open();
+            string boughtQuery = "SELECT id FROM main WHERE bought = 1;";
+            SqliteCommand boughtCommand = new(boughtQuery, connection);
+
+            using SqliteDataReader boughtReader = boughtCommand.ExecuteReader();
+
+            while (boughtReader.Read())
+            {
+                boughtItems.Add(boughtReader.GetInt32(0));
+            }
+        }
+
+        InitiateDataBase();
+
+        using SqliteConnection newConnection = new("Data Source=" +
+            Path.Combine(Application.persistentDataPath, DATABASE_NAME));
+
+        newConnection.Open();
+
+        foreach (int item in boughtItems) 
+        {
+            using SqliteCommand buy = new("UPDATE main SET bought = 1 WHERE id = " + item + ";", newConnection);
+            buy.ExecuteNonQuery();
+        }
+    }
+
+    private static void InitiateDataBase()
+    {
+        File.Copy(Path.Combine(Application.streamingAssetsPath, DATABASE_NAME)
+            , Path.Combine(Application.persistentDataPath, DATABASE_NAME), true);
+    }
+
     public static Dictionary<string, Item> GetData()
     {
-        Dictionary<string, Item> dict = new();
-        if (!File.Exists(DATABASE_PATH))
-        {
-            InitiateData();
-        }
-        string[] lines = File.ReadAllLines(DATABASE_PATH);
-
-        for (int i = 1; i < lines.Length; i++)
-        {
-            string[] arr = lines[i].Split(',');
-            if (arr.Length != 6)
-            {
-                continue;
-            }
-            dict.Add(arr[1], new Item
-                (
-                int.Parse(arr[0]),
-                arr[1],
-                int.Parse(arr[2]),
-                int.Parse(arr[3]),
-                arr[4],
-                arr[5]
-                ));
-        }
-
-        return dict;
+        instance ??= new NewDataBase();
+        return instance.data;
     }
 
-    public static void StoreData(Dictionary<string, Item> dict)
+    public static void BuyItem(Item item) 
     {
-        string lines = "id,name,price,bought,pretty_name,info\n";
-        foreach (Item item in dict.Values)
+        string query = "UPDATE main SET bought = 1 WHERE id = " + item.id + ";";
+
+        using (SqliteConnection connection = new("Data Source=" +
+            Path.Combine(Application.persistentDataPath, DATABASE_NAME))) 
         {
-            lines += item.ToString();
+            connection.Open();
+            SqliteCommand command = new(query, connection);
+            command.ExecuteNonQuery();
         }
 
-        File.WriteAllText(DATABASE_PATH, lines);
+        item.bought = true;
+        instance.data[item.name] = item;
     }
+
 }
 
 interface IDamagable

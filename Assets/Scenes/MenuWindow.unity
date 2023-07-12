@@ -3108,7 +3108,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0.0007324219}
-  m_SizeDelta: {x: 0, y: 130.89001}
+  m_SizeDelta: {x: 0, y: 313.6501}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &985867827
 MonoBehaviour:
@@ -3132,22 +3132,27 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Name: Maribird Maribird
 
+    
 
-    Dossier: Maribird was a plumber but one
-    day he woke up in this game. At first he was very confused but now he is pretty
-    sure that what he is experiencing is a surprisingly long lasting side effect
-    of his passion - eating mushrooms. Day before this happened Maribird was fixing
-    plumbing for some guy. After he finished the customer said that he couldn''t
+    Bio: Maribird was an ordinary plumber
+    but one day he woke up in this game. At first he was very confused but now he
+    is pretty sure that what he is experiencing is a surprisingly long lasting side
+    effect of his passion - eating mushrooms. Day before this happened Maribird was
+    fixing plumbing for some guy. After he finished the customer said that he couldn''t
     pay him at the moment because he spent all his money on some kind of mushrooms
     that our plumber had never heard of before. Maribird offered him a deal: he would
     wave the fee for some of those rare mushrooms. The guy agreed and gave him a
     small bag. When Maribird got home in the evening he poured the whole bag in his
-    dinner. After eating it he started feeling nauseous and went to bed.
-
-    Maribird
+    spaghetti. After eating it he started feeling nauseous and went to bed. Maribird
     thinks that he is trapped in his own dream and to really wake up he has to find
-    a leaking pipe at the end of this labyrinth and fix it. But until now he has
-    had a very hard time getting trough it and he was hoping you can help him.'
+    a leaking pipe at the end of this labyrinth and fix it. But until now he had
+    had a very hard time getting trough it and he was hoping you can help him.
+
+    
+
+    Health:
+    Maribird is a relatively young and healthy bird, and considering his suppressed
+    feeling pain he could for example sustain one missile hit but no more.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 79ea644f23a6c68489fedacf67feb446, type: 2}
   m_sharedMaterial: {fileID: 5336521127620073996, guid: 79ea644f23a6c68489fedacf67feb446, type: 2}
