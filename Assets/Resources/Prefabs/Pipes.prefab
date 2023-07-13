@@ -1128,8 +1128,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coin: {fileID: 4222893210263211189}
   magnet: {fileID: 652655244626631933}
-  coinProbability: 20
-  magnetProbability: 10
+  coinProbability: 19.5
+  magnetProbability: 16.1
 --- !u!1 &8453908985432275068
 GameObject:
   m_ObjectHideFlags: 0

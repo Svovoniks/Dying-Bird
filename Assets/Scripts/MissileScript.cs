@@ -7,6 +7,7 @@ public class MissileScript : MonoBehaviour
     public event EventHandler GotDestroyed;
 
     [SerializeField] private float speed = 1f;
+    [SerializeField] private float speedMultiplier = 1.2f;
     [SerializeField] private float destroyAfter;
     [SerializeField] private bool evil = false;
     [SerializeField] private float damagePerHit = 1;
@@ -22,6 +23,7 @@ public class MissileScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        LogicScript logicScript = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
         blownUp = false;
         if (!evil)
         {
@@ -34,6 +36,7 @@ public class MissileScript : MonoBehaviour
         else 
         {
             hitsLeft = 1;
+            speed *= math.pow(speedMultiplier, logicScript.BossesKilled);
         }
         
 

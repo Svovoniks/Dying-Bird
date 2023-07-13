@@ -3831,6 +3831,7 @@ MonoBehaviour:
   pipeOffset: 0.95
   speed: 1
   bossInterval: 10
+  bossIncrement: 5
 --- !u!224 &1304773355
 RectTransform:
   m_ObjectHideFlags: 0

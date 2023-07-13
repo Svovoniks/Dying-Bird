@@ -1,13 +1,16 @@
+using System;
 using UnityEngine;
 
 public class PipeSpawnerScript : MonoBehaviour
 {
+    public event EventHandler Deactivated;
 
     [SerializeField] private GameObject pipe;
     [SerializeField] private float interval = 1;
     [SerializeField] private float pipeOffset = 1;
     [SerializeField] private float speed = 1;
     [SerializeField] private int bossInterval = 50;
+    [SerializeField] private int bossIncrement = 1;
 
     public float CurrentSpeed { get; private set; }
 
@@ -33,16 +36,21 @@ public class PipeSpawnerScript : MonoBehaviour
             CurrentSpeed = 0;
             return;
         }
+        
+        if (pipeCounter == bossInterval) 
+        {
+            active = false;
+            pipeCounter = 0;
+            bossInterval += bossIncrement;
+            OnDeactivation();
+        }
 
         if (!active) 
         {
             return;
         }
 
-        if (pipeCounter == bossInterval) 
-        {
-            active = false;
-        }
+        
 
         CurrentSpeed += Time.deltaTime / 1000;
 
@@ -73,13 +81,17 @@ public class PipeSpawnerScript : MonoBehaviour
         float high = transform.position.y + pipeOffset;
         float low = transform.position.y - pipeOffset;
 
-        Instantiate(pipe, new Vector3(transform.position.x, Random.Range(high, low), transform.position.z), transform.rotation);
+        Instantiate(pipe, new Vector3(transform.position.x, UnityEngine.Random.Range(high, low), transform.position.z), transform.rotation);
     }
 
     public void Activate()
     {
         active = true;
-        pipeCounter = 0;
         timer = 0;
+    }
+
+    private void OnDeactivation()
+    {
+        Deactivated?.Invoke(this, EventArgs.Empty);
     }
 }

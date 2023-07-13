@@ -11,7 +11,9 @@ public class BossScript : MonoBehaviour, IDamagable
     public event EventHandler JustDied;
 
     [SerializeField] private float missileTimeout;
+    [SerializeField] private float missileTimeoutMultiplier;
     [SerializeField] private float HP;
+    [SerializeField] private float HPIncrement;
     [SerializeField] private float screenOffset;
     [SerializeField] private float arrivalSpeed;
     [SerializeField] private GameObject missile;
@@ -31,12 +33,19 @@ public class BossScript : MonoBehaviour, IDamagable
     // Start is called before the first frame update
     void Start()
     {
+        logicScript = GameObject.FindGameObjectWithTag("Logic").
+            GetComponent<LogicScript>();
+
+        HP += HPIncrement * logicScript.BossesKilled;
+        missileTimeout *= math.pow(missileTimeoutMultiplier, logicScript.BossesKilled);
+
+        Debug.Log(HP);
+
         isAlive = true;
         arrived = false;
         healthLeft = HP;
         startingPosition = mainBody.transform.position.x;
-        logicScript = GameObject.FindGameObjectWithTag("Logic").
-            GetComponent<LogicScript>();
+
         logicScript.GameOverlay.SetBossHealth(1);
         bird = FindObjectOfType<BirdScript>();
     }
@@ -93,8 +102,6 @@ public class BossScript : MonoBehaviour, IDamagable
             Destroy(mainBody, explosion.main.duration);
             isAlive = false;
             OnDeath();
-            logicScript.ExitBoss();
-
         }
     }
 

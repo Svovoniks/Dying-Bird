@@ -50,6 +50,7 @@ public class LogicScript : MonoBehaviour
     public float MagnetFill { get; private set; }
     public float MissileFill { get; private set; }
     public bool Playing { get; private set; }
+    public int BossesKilled { get; private set; }
 
     private int _score;
     public int Score
@@ -61,10 +62,6 @@ public class LogicScript : MonoBehaviour
         set 
         {
             _score = value;
-            if (_score != 0 && _score % pipeSpawner.GetBossInterval() == 0) 
-            {
-                preparingForBoss = true;
-            }
             GameOverlay.SetScore(_score);
         }
     }
@@ -126,7 +123,7 @@ public class LogicScript : MonoBehaviour
         preparingForBoss = false;
         waitingForBird = false;
         bossTime = false;
-
+        BossesKilled = 0;
 
         lastMagnetTime = -magnetTime;
 
@@ -143,6 +140,8 @@ public class LogicScript : MonoBehaviour
         };
 
         pipeSpawner = FindObjectOfType<PipeSpawnerScript>();
+        pipeSpawner.Deactivated += (a, b) => preparingForBoss = true;
+
         bird = FindObjectOfType<BirdScript>();
 
         bird.JustDied += OnBirdDeath;
@@ -235,7 +234,11 @@ public class LogicScript : MonoBehaviour
         else if (waitingForBird && bird.BossReady)
         {
             Utils.OpenScreen(BOSS_GAME_OVERLAY_SCREEN_IDX, screenArray);
-            Instantiate(boss, bossPosition.position, new Quaternion());
+            BossScript bossScript = Instantiate(boss, bossPosition.position, new Quaternion())
+                .GetComponentInChildren<BossScript>();
+
+
+            bossScript.JustDied += (a, b) => ExitBoss();
             GameOverlay = bossOverlayScript;
             bossTime = true;
 
@@ -260,6 +263,7 @@ public class LogicScript : MonoBehaviour
         Utils.OpenScreen(GAME_OVERLAY_SCREEN_IDX, screenArray);
         GameOverlay = gameOverlayScript;
         bossTime = false;
+        BossesKilled++;
 
         CoinCloudScript cloud = Instantiate(coinCloud, coinCloudPosition.position,
             new Quaternion()).GetComponent<CoinCloudScript>();

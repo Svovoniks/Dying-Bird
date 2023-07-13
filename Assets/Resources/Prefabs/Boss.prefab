@@ -264,7 +264,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   missileTimeout: 2
+  missileTimeoutMultiplier: 0.88
   HP: 2
+  HPIncrement: 0.5
   screenOffset: 1.3
   arrivalSpeed: 0.5
   missile: {fileID: 4053452447246152103, guid: aa9c38e47e360164582059046790cae6, type: 3}

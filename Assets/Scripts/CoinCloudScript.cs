@@ -32,7 +32,6 @@ public class CoinCloudScript : MonoBehaviour
         {
             OnMiddle();
             notified = true;
-            Debug.Log("ttt");
         }
         transform.position += pipeSpawnerScript.CurrentSpeed * Time.deltaTime * Vector3.left;
     }

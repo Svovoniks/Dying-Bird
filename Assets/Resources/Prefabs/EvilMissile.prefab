@@ -5057,6 +5057,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: -1
+  speedMultiplier: 1.3
   destroyAfter: 5
   evil: 1
   damagePerHit: 0.5
